@@ -22,6 +22,10 @@ def optimize_optuna(env_train, env_validate, callbacks, n_trial_runs=10):
         reward_scaling = trial.suggest_loguniform("reward_scaling", 1e-5, 1e-3)
         env_train.reward_scaling = reward_scaling
         # env_train.lookback = trial.suggest_int("lookback", 100, 700)
+        short_selling_allowed = trial.suggest_categorical('short_selling_allowed', [True, False])
+        take_leverage_allowed = trial.suggest_categorical('take_leverage_allowed', [True, False])
+        env_train.short_selling_allowed = short_selling_allowed
+        env_train.take_leverage_allowed = take_leverage_allowed
 
    
 
