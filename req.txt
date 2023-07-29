@@ -1,9 +1,0 @@
-nvidia/cuda:12.2.0-devel-ubuntu20.04
-
-gymnasium
-numpy
-stable_baselines3
-pandas
-matplotlib
-
-https://github.com/sobiodum/quantumai2.git
