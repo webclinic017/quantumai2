@@ -43,6 +43,10 @@ class FlorianPortfolioEnv(gym.Env):
         # self.observation_space = spaces.Box(low=0, high=1,shape=(self.state_space,))
         self.action_space = spaces.Box(low=-1, high=1, shape=(self.action_space,))
         self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(self.state_space,))
+        #! trial if fixed at 9 works
+        # self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(9,))
+        # print("INIT - Action space:", self.action_space)
+        # print("INIT - Observation space:", self.observation_space)
         self.state = self._initiate_state()
 
         #Initiate Reward
@@ -56,6 +60,7 @@ class FlorianPortfolioEnv(gym.Env):
             *np.array(self.state[1:1+self.stock_dim])
             )]
         self.rewards_memory = []
+        self.portfolio_return_memory = [0]
         self.actions_memory = []
         self.state_memory = ([])
         self.date_memory = [self._get_date()]
@@ -134,6 +139,8 @@ class FlorianPortfolioEnv(gym.Env):
             df_rewards = pd.DataFrame(self.rewards_memory)
             df_rewards.columns = ['account_rewards']
             df_rewards['date'] = self.date_memory[:-1]
+            df_daily_return = pd.DataFrame(self.portfolio_return_memory)
+            df_daily_return.columns = ['daily_return']
             if self.episode % self.print_verbosity == 0:
                 print(f"day: {self.day}, episode: {self.episode}")
                 print(f"begin_total_asset: {self.asset_memory[0]:0.2f}")
@@ -208,12 +215,15 @@ class FlorianPortfolioEnv(gym.Env):
             self.rewards_memory.append(self.reward)
             self.reward = self.reward*self.reward_scaling
             self.state_memory.append(self.state)
+            portfolio_return = (end_total_asset / begin_total_asset) -1
+            self.portfolio_return_memory.append(portfolio_return)
         return self.state, self.reward, self.terminal, False, {}
 
     def reset(self,*,seed=None,options=None):
         self.day = 0
         self.data = self.df.loc[self.day,:]
         self.state = self._initiate_state()
+        # print("reset - Initial state:", self.state)
         if self.initial:
             self.asset_memory = [
                 self.initial_amount
@@ -230,11 +240,12 @@ class FlorianPortfolioEnv(gym.Env):
         self.trades = 0
         self.terminal = False
         self.rewards_memory = []
+        self.portfolio_return_memory = [0]
         self.actions_memory = []
         self.date_memory = [self._get_date()]
         self.episode += 1
         #chatgpt suggested to convert self. satet to np array
-        return np.array(self.state), {}
+        return self.state, {}
 
     def render(self, mode='human', close=False):
         # Render the environment to the screen
@@ -275,6 +286,8 @@ class FlorianPortfolioEnv(gym.Env):
                 list(self.state[(self.stock_dim + 1):(self.stock_dim * 2 + 1)]) +
                 sum([[self.data[indicator]] for indicator in self.indicators], [])
             )
+        return np.array(state, dtype=np.float32)
+    #!array converison and float typen given by chatgpt
         return state
 
     
@@ -314,6 +327,21 @@ class FlorianPortfolioEnv(gym.Env):
             df_states = pd.DataFrame({"date": date_list, "states": state_list})
         # print(df_states)
         return df_states
+    def save_asset_memory(self):
+        date_list = self.date_memory
+        asset_list = self.asset_memory
+        # print(len(date_list))
+        # print(len(asset_list))
+        df_account_value = pd.DataFrame(
+            {"date": date_list, "account_value": asset_list}
+        )
+        return df_account_value
+    
+    def save_return_memory(self):
+        date_list = self.date_memory
+        return_list = self.portfolio_return_memory
+        df_return_memory = pd.DataFrame({"date": date_list, "daily_return": return_list})
+        return df_return_memory
     
     def save_action_memory(self):
         if len(self.df.tic.unique()) > 1:
