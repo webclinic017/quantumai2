@@ -12,7 +12,7 @@ def optimize_optuna(env_train, env_validate, callbacks, n_trial_runs=10):
     def objective(trial):
         start_time = time.time()  # Start the timer
         learning_rate = trial.suggest_float("learning_rate", 1e-5, 1e-3, log=True)
-        n_steps = trial.suggest_int("n_steps", 1, 50)
+        n_steps = trial.suggest_int("n_steps", 100, 5000)
         gamma = trial.suggest_float("gamma", 0.9, 0.9999, log=True)
         gae_lambda = trial.suggest_float("gae_lambda", 0.8, 1.0, log=True)
         ent_coef = trial.suggest_float("ent_coef", 0.001, 0.1, log=True)
