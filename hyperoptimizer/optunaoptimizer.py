@@ -4,20 +4,26 @@ from stable_baselines3 import A2C
 from stable_baselines3.common.evaluation import evaluate_policy
 import joblib
 import optuna
-
+import numpy as np
 
 
 
 def optimize_optuna(env_train, env_validate, callbacks, n_trial_runs=10):
+    best_model = None
+    best_value = -np.inf
+    
     def objective(trial):
+        print(f"Trial {trial.number} started.")
+    
         start_time = time.time()  # Start the timer
-        learning_rate = trial.suggest_float("learning_rate", 1e-5, 1e-3, log=True)
-        n_steps = trial.suggest_int("n_steps", 100, 5000)
+        learning_rate = trial.suggest_float("learning_rate", 0.0001, 0.00001, log=True)
+        n_steps = trial.suggest_int("n_steps", 1000, 10000)
+        timesteps = trial.suggest_int("total_timesteps", 10000, 100000)
         gamma = trial.suggest_float("gamma", 0.9, 0.9999, log=True)
-        gae_lambda = trial.suggest_float("gae_lambda", 0.8, 1.0, log=True)
-        ent_coef = trial.suggest_float("ent_coef", 0.001, 0.1, log=True)
-        vf_coef = trial.suggest_float("vf_coef", 0.1, 0.5, log=True)
-        max_grad_norm = trial.suggest_float("max_grad_norm", 0.1, 0.6, log=True)
+        gae_lambda = trial.suggest_float("gae_lambda", 0.9, 1.0, log=True)
+        ent_coef = trial.suggest_float("ent_coef", 0.01, 0.1, log=True)
+        vf_coef = trial.suggest_float("vf_coef", 0.1, 0.3, log=True)
+        max_grad_norm = trial.suggest_float("max_grad_norm", 0.1, 0.4, log=True)
         #envrionment
         reward_scaling = trial.suggest_loguniform("reward_scaling", 1e-5, 1e-3)
         env_train.reward_scaling = reward_scaling
@@ -41,12 +47,17 @@ def optimize_optuna(env_train, env_validate, callbacks, n_trial_runs=10):
             }
         # Train the model
         model = A2C('MlpPolicy', env_train, verbose=0, tensorboard_log="./tensorboard/a2c_florian/", **A2C_PARAMS)
-        model.learn(total_timesteps=50000, callback=callbacks, tb_log_name="a2c_florian_any_name")
+        model.learn(total_timesteps=timesteps, callback=callbacks, tb_log_name="a2c_florian_any_name")
       
 
 
         # Test the model and return the mean reward
         mean_reward, _ = evaluate_policy(model, env_validate, n_eval_episodes=10)
+        # Save the model if it's better than the current best
+        nonlocal best_model, best_value
+        if mean_reward > best_value:
+            best_value = mean_reward
+            best_model = model
         end_time = time.time()  # End the timer
         elapsed_time = end_time - start_time  # Calculate the elapsed time
 
@@ -59,6 +70,8 @@ def optimize_optuna(env_train, env_validate, callbacks, n_trial_runs=10):
     try:
         study = optuna.create_study(direction="maximize")
         study.optimize(objective, n_trials=n_trial_runs,callbacks=[save_checkpoint])
+        # Save the best model to a file
+        best_model.save("best_model")
     except Exception as e:
         print(f"Exception during trial: {e}")
  
@@ -73,3 +86,4 @@ def optimize_optuna(env_train, env_validate, callbacks, n_trial_runs=10):
     for key, value in trial_.params.items():
         print(f'    {key}: {value}')
 
+    return study
