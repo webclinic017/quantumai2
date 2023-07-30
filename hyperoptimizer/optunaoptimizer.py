@@ -16,7 +16,7 @@ def optimize_optuna(env_train, env_validate, callbacks, n_trial_runs=10):
         print(f"Trial {trial.number} started.")
     
         start_time = time.time()  # Start the timer
-        learning_rate = trial.suggest_float("learning_rate", 0.0001, 0.00001, log=True)
+        learning_rate = trial.suggest_float("learning_rate", 0.00001, 0.0001, log=True)
         n_steps = trial.suggest_int("n_steps", 1000, 10000)
         timesteps = trial.suggest_int("total_timesteps", 10000, 100000)
         gamma = trial.suggest_float("gamma", 0.9, 0.9999, log=True)
