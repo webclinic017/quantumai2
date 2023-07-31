@@ -8,3 +8,4 @@ joblib
 pyfolio 
 matplotlib 
 yfinance
+pdblp
