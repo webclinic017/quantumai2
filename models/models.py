@@ -35,6 +35,7 @@ class DRLAgent:
             account_memory = []
             actions_memory = []
             return_memory = []
+            portfolio_memory = []
             #         state_memory=[] #add memory pool to store states
             test_env.reset()
             for i in range(len(environment.df.index.unique())):
@@ -47,8 +48,9 @@ class DRLAgent:
                     account_memory = test_env.env_method(method_name="save_asset_memory")
                     actions_memory = test_env.env_method(method_name="save_action_memory")
                     return_memory = test_env.env_method(method_name="save_return_memory")
+                    portfolio_memory = test_env.env_method(method_name="save_portfolio_memory")
                 #                 state_memory=test_env.env_method(method_name="save_state_memory") # add current state to state memory
                 if dones[0]:
                     print("hit end!")
                     break
-            return account_memory[0], actions_memory[0],return_memory[0]
+            return account_memory[0], actions_memory[0],return_memory[0], portfolio_memory[0]

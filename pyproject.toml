@@ -1,0 +1,49 @@
+[tool.poetry]
+name = "quantumai2"
+version = "0.1"
+
+description = "tbd"
+authors = ["tbd"]
+license = "MIT"
+
+
+classifiers=[
+        # Trove classifiers
+        # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: Implementation :: CPython",
+        "Programming Language :: Python :: Implementation :: PyPy",
+    ]
+
+[tool.poetry.urls]
+github = "https://github.com/sobiodum/quantumai2.git"
+
+[tool.poetry.dependencies]
+gymnasium 
+numpy 
+stable-baselines3 
+pandas 
+stable-baselines3[extra] 
+optuna 
+joblib 
+pyfolio 
+matplotlib 
+yfinance
+pdblp
+
+[tool.poetry.group.dev.dependencies]
+black = "^23"
+isort = "^5"
+jupyter = "^1"
+mypy = "^1"
+pandas-stubs = "^2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

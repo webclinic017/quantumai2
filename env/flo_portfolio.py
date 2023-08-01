@@ -10,7 +10,7 @@ from gymnasium.utils import seeding
 
 class FlorianPortfolioEnv(gym.Env):
     metadata = {'render.modes': ['human']}
-    def __init__(self,df,action_space,stock_dim,short_selling_allowed,hmax: int,
+    def __init__(self,df,action_space,stock_dim,stock_list,short_selling_allowed,hmax: int,
                  num_stock_shares: list[int],take_leverage_allowed,trade_cost_pct,
                  initial_amount:int,state_space,indicators,reward_scaling,previous_state=[],
                  day=0,initial=True,print_verbosity=10,make_plots:bool = False, model_name="", mode="", iteration=""):
@@ -22,6 +22,7 @@ class FlorianPortfolioEnv(gym.Env):
         self.model_name = model_name
         self.reward_scaling = reward_scaling
         self.stock_dim = stock_dim
+        self.stock_list = stock_list
         self.num_stock_shares = num_stock_shares
         self.short_selling_allowed = short_selling_allowed
         self.take_leverage_allowed = take_leverage_allowed
@@ -60,10 +61,16 @@ class FlorianPortfolioEnv(gym.Env):
             *np.array(self.state[1:1+self.stock_dim])
             )]
         self.rewards_memory = []
+
         self.portfolio_return_memory = [0]
+        self.stock_holdings_memory = [self.num_stock_shares ]
         self.actions_memory = []
         self.state_memory = ([])
         self.date_memory = [self._get_date()]
+        #! Init of total portfolio incl cash
+        self.portfolio_memory = {"cash": [self.initial_amount]}
+        for stock, shares in zip(self.stock_list, self.num_stock_shares):
+            self.portfolio_memory[stock] = [shares]
 
     def _sell_stock(self, index, action):
         if self.short_selling_allowed:
@@ -84,6 +91,7 @@ class FlorianPortfolioEnv(gym.Env):
                 self.state[index +1] * sell_num_shares * self.trade_cost_pct
             )
             self.trades += 1
+        
         return sell_num_shares
     
     def _buy_stock(self, index, action):
@@ -103,6 +111,7 @@ class FlorianPortfolioEnv(gym.Env):
             self.state[index + self.stock_dim + 1] += buy_num_shares
             self.cost += (self.state[index + 1] * buy_num_shares * self.trade_cost_pct)
             self.trades += 1
+        
         return buy_num_shares
     def _make_plots(self):
         plt.plot(self.asset_memory, "r")
@@ -217,6 +226,10 @@ class FlorianPortfolioEnv(gym.Env):
             self.state_memory.append(self.state)
             portfolio_return = (end_total_asset / begin_total_asset) -1
             self.portfolio_return_memory.append(portfolio_return)
+            self.stock_holdings_memory.append(self.state[(self.stock_dim + 1):(self.stock_dim * 2 + 1)].copy())
+            self.portfolio_memory["cash"].append(self.state[0])
+            for i, stock_name in enumerate(self.stock_list):
+                self.portfolio_memory[stock_name].append(self.state[i + self.stock_dim + 1])
         return self.state, self.reward, self.terminal, False, {}
 
     def reset(self,*,seed=None,options=None):
@@ -241,9 +254,16 @@ class FlorianPortfolioEnv(gym.Env):
         self.terminal = False
         self.rewards_memory = []
         self.portfolio_return_memory = [0]
+        self.stock_holdings_memory = [self.num_stock_shares ]
         self.actions_memory = []
         self.date_memory = [self._get_date()]
         self.episode += 1
+        #! hier von chat.. weiss nicht ob das richtiger reset ist
+        self.portfolio_memory = {"cash": [self.initial_amount]}
+        for stock in self.stock_list:
+            self.portfolio_memory[stock] = [self.num_stock_shares[self.stock_list.index(stock)]]
+     
+
         #chatgpt suggested to convert self. satet to np array
         return self.state, {}
 
@@ -337,6 +357,13 @@ class FlorianPortfolioEnv(gym.Env):
         )
         return df_account_value
     
+    def save_stock_holdings_memory(self):
+        date_list = self.date_memory
+        stock_holdings_list = self.stock_holdings_memory
+        df_stock_holdinds = pd.DataFrame({"date": date_list, "stock_holdings": stock_holdings_list})
+        return df_stock_holdinds
+
+    
     def save_return_memory(self):
         date_list = self.date_memory
         return_list = self.portfolio_return_memory
@@ -351,7 +378,12 @@ class FlorianPortfolioEnv(gym.Env):
             action_list = self.actions_memory
             df_actions = pd.DataFrame({"date": date_list, "actions": action_list})
         return df_actions
+    def save_portfolio_memory(self):
+        df_portfolio = pd.DataFrame(self.portfolio_memory)
+        df_portfolio['date'] = self.date_memory
+        return df_portfolio
     
+
     def _seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
