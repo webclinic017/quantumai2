@@ -10,3 +10,4 @@ matplotlib
 yfinance
 pdblp
 wandb
+stockstats

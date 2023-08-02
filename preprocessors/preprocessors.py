@@ -6,7 +6,7 @@ from multiprocessing.sharedctypes import Value
 import numpy as np
 import pandas as pd
 from stockstats import StockDataFrame as Sdf
-from config import tickers
+from configs import tickers
 
 
 class DataProcessor:
