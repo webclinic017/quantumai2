@@ -1,6 +1,8 @@
 import pdblp
 import pandas as pd
 from datetime import datetime
+from pandas.tseries.offsets import BDay
+from pandas.tseries.offsets import DateOffset
 
 
 # Create a BCon object
@@ -71,5 +73,67 @@ def bbg_download_data_eco_indicators(tickers, fields, start_date, end_date, con)
     # Combine all Series into a DataFrame
     data_df = pd.DataFrame(data_dict)
     data_df = data_df.reset_index()
+
+    return data_df
+
+
+def bbg_data_intraday(tickers, start_date, end_date, interval):
+    con = pdblp.BCon(debug=False, port=8194, timeout=5000)
+    con.start()
+    # Generate list of business days between start_date and end_date
+    business_days = pd.date_range(start_date, end_date, freq=BDay())
+
+    data_df = pd.DataFrame()
+
+    for ticker in tickers:
+        for start_day in business_days:
+            # Shift start_day by one business day to get end_day
+            end_day = start_day + DateOffset(days=1)
+
+            # Convert start_day and end_day to strings in the correct format
+            start = str(start_day.strftime('%Y-%m-%dT09:30:00'))
+            end = str(end_day.strftime('%Y-%m-%dT15:30:00'))
+
+            try:
+                temp_df = con.bdib(ticker, start, end,
+                                   'TRADE', interval=interval)
+                temp_df["tic"] = ticker
+                if len(temp_df) > 0:
+                    data_df = pd.concat([data_df, temp_df], axis=0)
+            except Exception as e:
+                print(
+                    f"Error fetching data for ticker {ticker} on {start} to {end}: {e}")
+
+    return data_df
+
+
+def bbg_data_intraday_simple(tickers):
+    con = pdblp.BCon(debug=False, port=8194, timeout=5000)
+    con.start()
+    # Generate list of business days between start_date and end_date
+    # business_days = pd.date_range(start_date, end_date, freq=BDay())
+
+    # Generate list of start and end dates for each two-day period
+    # two_day_periods = [(business_days[i], business_days[i+1])
+    #                    for i in range(len(business_days)-1)]
+
+    data_df = pd.DataFrame()
+
+    for ticker in tickers:
+        # for start_day, end_day in two_day_periods:
+        #     start_day_str = start_day.strftime('%Y-%m-%d')
+        #     end_day_str = end_day.strftime('%Y-%m-%d')
+        start = '2023-06-19T09:30:00'
+        end = '2023-07-19T15:30:00'
+        try:
+            temp_df = con.bdib(ticker, start, end,
+                               'TRADE', interval=60)
+            temp_df["tic"] = ticker
+            if len(temp_df) > 0:
+                data_df = pd.concat([data_df, temp_df], axis=0)
+        except Exception as e:
+            print(
+                f"Error fetching data for ticker {ticker} on {start} to {end}: {e}")
+    con.stop()
 
     return data_df
