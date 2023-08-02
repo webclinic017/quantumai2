@@ -1,6 +1,26 @@
 ASSET_TICKERS = []
 ASSET_TECH_INDIC_TICKERS = []
 
+INDICATORS_STOCKSTATS = [
+    "macd",
+    "macds",
+    "macdh",
+    "trix",
+    "boll",
+    "boll_ub",
+    "boll_lb",
+    "rsi_14",
+    "rsi_30",
+    "cci_30",
+    "dx_30",
+    "close_10_mad",
+    "close_30_sma",
+    "close_60_sma",
+    "close_200_sma",
+    "rvgi",
+    "rvgis"
+]
+
 
 ECONOMIC_INDICATOR_TICKERS = ['.AAIIB2B G Index',
                               '.DMASPX G Index',

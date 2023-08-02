@@ -8,19 +8,22 @@ import matplotlib.pyplot as plt
 from gymnasium.utils import seeding
 
 
-class FlorianPortfolioEnv(gym.Env):
+class Portfolio_BBG(gym.Env):
     metadata = {'render.modes': ['human']}
-    def __init__(self,df,action_space,stock_dim,stock_list,short_selling_allowed,hmax: int,
+    def __init__(self,df,action_space,stock_dim,sharpe_ratio_weight,loss_penalty_weight,stock_list,short_selling_allowed,hmax: int,
                  num_stock_shares: list[int],take_leverage_allowed,trade_cost_pct,
                  initial_amount:int,state_space,indicators,reward_scaling,previous_state=[],
-                 day=0,initial=True,print_verbosity=10,make_plots:bool = False, model_name="", mode="", iteration=""):
+                 day=0,initial=True,print_verbosity=10,make_plots:bool = False, model_name="", mode="", iteration="",state_window=200):
         # super().__init__()
         #action space = number of stocks
         self.terminal = False
         self.action_space = action_space
         self.previous_state = previous_state
+        self.state_window = state_window
         self.model_name = model_name
         self.reward_scaling = reward_scaling
+        self.sharpe_ratio_weight = sharpe_ratio_weight
+        self.loss_penalty_weight = loss_penalty_weight
         self.stock_dim = stock_dim
         self.stock_list = stock_list
         self.num_stock_shares = num_stock_shares
@@ -71,6 +74,19 @@ class FlorianPortfolioEnv(gym.Env):
         self.portfolio_memory = {"cash": [self.initial_amount]}
         for stock, shares in zip(self.stock_list, self.num_stock_shares):
             self.portfolio_memory[stock] = [shares]
+    
+    def calculate_sharpe_ratio(self):
+        returns = np.array(self.portfolio_return_memory)
+        std_returns = np.std(returns)
+        if std_returns == 0:
+            std_returns = 1e-6  # small constant to avoid division by zero
+        return np.mean(returns) / std_returns * np.sqrt(252) 
+
+    def calculate_reward(self, begin_total_asset, end_total_asset,sharpe_ratio_weight, loss_penalty_weight):
+        total_asset_reward = end_total_asset - begin_total_asset
+        sharpe_ratio = self.calculate_sharpe_ratio()
+        loss_penalty = -1 * np.min([0, end_total_asset - begin_total_asset])
+        return total_asset_reward + sharpe_ratio_weight * sharpe_ratio + loss_penalty_weight * loss_penalty
 
     def _sell_stock(self, index, action):
         if self.short_selling_allowed:
@@ -220,7 +236,8 @@ class FlorianPortfolioEnv(gym.Env):
             )
             self.asset_memory.append(end_total_asset)
             self.date_memory.append(self._get_date())
-            self.reward = end_total_asset - begin_total_asset
+            #! More Reward inputs
+            self.reward = self.calculate_reward(begin_total_asset, end_total_asset, self.sharpe_ratio_weight, self.loss_penalty_weight)
             self.rewards_memory.append(self.reward)
             self.reward = self.reward*self.reward_scaling
             self.state_memory.append(self.state)
@@ -277,6 +294,20 @@ class FlorianPortfolioEnv(gym.Env):
             if len(self.df.tic.unique()) > 1:
                 raise ValueError("Stocks are more than one")
             else:
+                #! Use as much past data as available, up to n_days_window days
+                #! Erstmal rausgenommen und schauen iob bbg field geht
+                # available_past_data = self.df.iloc[max(0, self.day-self.state_window):self.day].values
+                # state = [self.initial_amount]  # vector of amount of dollar we have
+                # for i in range(available_past_data.shape[0]):
+                #     state += list(available_past_data[i, :]) + [0]*self.stock_dim
+                
+                # # If less than n_days_window days of past data was available, 
+                # # fill the remaining space with the earliest available data
+                # if available_past_data.shape[0] < self.n_days_window:
+                #     earliest_data = list(available_past_data[0, :]) + [0]*self.stock_dim
+                #     state += earliest_data * (self.n_days_window - available_past_data.shape[0])
+                    
+                # state += sum([[self.data[indicator]] for indicator in self.indicators], [])
                 state = (
                     [self.initial_amount] +  # vector of amount of dollar we have
                     [self.data.close] +

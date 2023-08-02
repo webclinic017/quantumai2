@@ -9,3 +9,4 @@ pyfolio
 matplotlib 
 yfinance
 pdblp
+wandb

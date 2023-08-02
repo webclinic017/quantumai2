@@ -6,13 +6,14 @@ from multiprocessing.sharedctypes import Value
 import numpy as np
 import pandas as pd
 from stockstats import StockDataFrame as Sdf
+from config import tickers
 
 
 class DataProcessor:
-    def __init__(self):
-        pass
+    def __init__(self,stockstats_tech_indicators =tickers.INDICATORS_STOCKSTATS):
+        self.stockstats_tech_indicators = stockstats_tech_indicators
 
-    def fill_eco_data(df: pd.DataFrame) -> pd.DataFrame:
+    def fill_eco_data(self, df: pd.DataFrame) -> pd.DataFrame:
         # Forward Fill
         df = df.fillna(method="ffill")
         # Backward fill with mean value
@@ -22,6 +23,50 @@ class DataProcessor:
                 df[col] = df[col].fillna(value=mean_value)
 
         return df
+    
+    def add_stockstats_technical_indicator(self, data):
+        """
+        calculate technical indicators
+        use stockstats package to add technical inidactors
+        :param data: (df) pandas dataframe
+        :return: (df) pandas dataframe
+        """
+        df = data.copy()
+        df = df.sort_values(by=["tic", "date"])
+        stock = Sdf.retype(df.copy())
+        unique_ticker = stock.tic.unique()
+
+        for indicator in self.stockstats_tech_indicators:
+            indicator_df = pd.DataFrame()
+            for i in range(len(unique_ticker)):
+                try:
+                    temp_indicator = stock[stock.tic ==
+                                            unique_ticker[i]][indicator]
+                    temp_indicator = pd.DataFrame(temp_indicator)
+                    temp_indicator["tic"] = unique_ticker[i]
+                    temp_indicator["date"] = df[df.tic == unique_ticker[i]][
+                        "date"
+                    ].to_list()
+                    # indicator_df = indicator_df.append(
+                    #     temp_indicator, ignore_index=True
+                    # )
+                    indicator_df = pd.concat(
+                        [indicator_df, temp_indicator], axis=0, ignore_index=True
+                    )
+                except Exception as e:
+                    print(e)
+            df = df.merge(
+                indicator_df[["tic", "date", indicator]], on=["tic", "date"], how="left"
+            )
+        df = df.sort_values(by=["date", "tic"])
+        return df
+    
+    def add_stockstats_technical_indicator(self, data):
+        """
+        Own indicators defined by Flo
+        """
+        pass
+        return 
 
 
 def load_dataset(*, file_name: str) -> pd.DataFrame:
