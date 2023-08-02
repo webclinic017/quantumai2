@@ -24,6 +24,13 @@ class DataProcessor:
 
         return df
     
+    def backward_fill(self, df: pd.DataFrame) -> pd.DataFrame:
+        # Backward fill with mean value
+        df = df.fillna(method="backfill")
+
+        return df
+    
+    
     def add_stockstats_technical_indicator(self, data):
         """
         calculate technical indicators
@@ -37,6 +44,7 @@ class DataProcessor:
         unique_ticker = stock.tic.unique()
 
         for indicator in self.stockstats_tech_indicators:
+
             indicator_df = pd.DataFrame()
             for i in range(len(unique_ticker)):
                 try:
@@ -54,6 +62,7 @@ class DataProcessor:
                         [indicator_df, temp_indicator], axis=0, ignore_index=True
                     )
                 except Exception as e:
+                    print(f"Indicator thrown an exception: {indicator}")
                     print(e)
             df = df.merge(
                 indicator_df[["tic", "date", indicator]], on=["tic", "date"], how="left"
@@ -61,7 +70,7 @@ class DataProcessor:
         df = df.sort_values(by=["date", "tic"])
         return df
     
-    def add_stockstats_technical_indicator(self, data):
+    def add_own_stockstats_technical_indicator(self, data):
         """
         Own indicators defined by Flo
         """

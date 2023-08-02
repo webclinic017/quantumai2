@@ -13,14 +13,14 @@ INDICATORS_STOCKSTATS = [
     "rsi_30",
     "cci_30",
     "dx_30",
-    "close_10_mad",
+    
     "close_30_sma",
     "close_60_sma",
     "close_200_sma",
-    "rvgi",
-    "rvgis"
+
 ]
 
+indicators_caused_issues = ["close_10_mad","rvgi",  "rvgis"]
 
 ECONOMIC_INDICATOR_TICKERS = ['.AAIIB2B G Index',
                               '.DMASPX G Index',
