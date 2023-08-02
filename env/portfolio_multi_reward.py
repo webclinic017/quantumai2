@@ -240,6 +240,10 @@ class FlorianPortfolioEnvMultiReward(gym.Env):
             self.rewards_memory.append(self.reward)
             self.reward = self.reward*self.reward_scaling
             self.state_memory.append(self.state)
+            #! WOrkaround da in optuna trial ein error kam
+            if begin_total_asset == 0:
+                print("WARNING: begin_total_asset is zero. Setting it to a small number to avoid divide by zero error.")
+                begin_total_asset = 1e-10  # or some small number
             portfolio_return = (end_total_asset / begin_total_asset) -1
             self.portfolio_return_memory.append(portfolio_return)
             self.stock_holdings_memory.append(self.state[(self.stock_dim + 1):(self.stock_dim * 2 + 1)].copy())

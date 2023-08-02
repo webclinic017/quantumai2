@@ -11,3 +11,4 @@ yfinance
 pdblp
 wandb
 stockstats
+plotly
