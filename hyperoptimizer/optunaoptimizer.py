@@ -44,27 +44,27 @@ def optimize_optuna_StockTrading(env_train, env_validate, callbacks, n_trial_run
         reward_scaling = trial.suggest_float("reward_scaling", 1e-5, 1e-3, log=True)
         env_train.reward_scaling = reward_scaling
         #hmax optimization
-        hmax = trial.suggest_int("hmax", 40000, 100000)
+        hmax = trial.suggest_int("hmax", 40000, 50000)
         env_train.hmax = hmax
         #high_profit_bonus
-        high_profit_bonus = trial.suggest_int("high_profit_bonus", 200, 10000)
+        high_profit_bonus = trial.suggest_int("high_profit_bonus", 200, 500)
         env_train.high_profit_bonus = high_profit_bonus
         #partial_sell_bonus
-        partial_sell_bonus = trial.suggest_int("partial_sell_bonus", 200, 10000)
+        partial_sell_bonus = trial.suggest_int("partial_sell_bonus", 200, 500)
         env_train.partial_sell_bonus = partial_sell_bonus
         #profit_threshold
-        profit_threshold = trial.suggest_float("profit_threshold", 0.01, 0.2, log=True)
-        env_train.profit_threshold = profit_threshold
+        # profit_threshold = trial.suggest_float("profit_threshold", 0.01, 0.2, log=True)
+        # env_train.profit_threshold = profit_threshold
         #sharpe_weight scaling
-        sharpe_ratio_weight = trial.suggest_float("sharpe_ratio_weight", 0.2, 0.9, log=True)
-        env_train.sharpe_ratio_weight = sharpe_ratio_weight
+        # sharpe_ratio_weight = trial.suggest_float("sharpe_ratio_weight", 0.2, 0.4, log=True)
+        # env_train.sharpe_ratio_weight = sharpe_ratio_weight
         #loss pentalty weight
-        loss_penalty_weight = trial.suggest_float("loss_penalty_weight", 0.1, 0.6, log=True)
-        env_train.loss_penalty_weight = loss_penalty_weight
+        # loss_penalty_weight = trial.suggest_float("loss_penalty_weight", 0.1, 0.6, log=True)
+        # env_train.loss_penalty_weight = loss_penalty_weight
         # env_train.lookback = trial.suggest_int("lookback", 100, 700)
         #  short selling for now
-        short_selling_allowed = trial.suggest_categorical('short_selling_allowed', [True, False])
-        env_train.short_selling_allowed = short_selling_allowed
+        # short_selling_allowed = trial.suggest_categorical('short_selling_allowed', [True, False])
+        # env_train.short_selling_allowed = short_selling_allowed
         #Allow leverage 
         # take_leverage_allowed = trial.suggest_categorical('take_leverage_allowed', [True, False])
         # env_train.take_leverage_allowed = take_leverage_allowed

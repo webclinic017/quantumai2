@@ -92,3 +92,47 @@ Traceback (most recent call last):
 KeyboardInterrupt
 Trial 8 failed with value None.
 A new study created in memory with name: no-name-ff6e93c0-b10d-44b2-a504-156e65f3e716
+Trial 0 failed with parameters: {'learning_rate': 8.306370344749333e-05, 'n_steps': 1586, 'total_timesteps': 2113155, 'gamma': 0.9078028246381973, 'gae_lambda': 0.9871224745413298, 'ent_coef': 0.016339335376241538, 'vf_coef': 0.28295351892177023, 'max_grad_norm': 0.21329977130277272, 'reward_scaling': 7.689029748800124e-05, 'hmax': 61136, 'high_profit_bonus': 4967, 'partial_sell_bonus': 3591, 'profit_threshold': 0.028978129824632187, 'sharpe_ratio_weight': 0.6114479367849075, 'loss_penalty_weight': 0.3379606578742139, 'short_selling_allowed': True} because of the following error: KeyboardInterrupt().
+Traceback (most recent call last):
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/optuna/study/_optimize.py", line 200, in _run_trial
+    value_or_values = func(trial)
+  File "/Users/floriankockler/Documents/GitHub.nosync/quantumai2/hyperoptimizer/optunaoptimizer.py", line 87, in objective
+    model.learn(total_timesteps=timesteps, callback=callbacks, tb_log_name="a2c_florian_any_name")
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/a2c/a2c.py", line 194, in learn
+    return super().learn(
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 259, in learn
+    continue_training = self.collect_rollouts(self.env, callback, self.rollout_buffer, n_rollout_steps=self.n_steps)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 178, in collect_rollouts
+    new_obs, rewards, dones, infos = env.step(clipped_actions)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/vec_env/base_vec_env.py", line 197, in step
+    return self.step_wait()
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/vec_env/vec_normalize.py", line 178, in step_wait
+    obs, rewards, dones, infos = self.venv.step_wait()
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/vec_env/dummy_vec_env.py", line 58, in step_wait
+    obs, self.buf_rews[env_idx], terminated, truncated, self.buf_infos[env_idx] = self.envs[env_idx].step(
+  File "/Users/floriankockler/Documents/GitHub.nosync/quantumai2/env/stock_trading.py", line 164, in step
+    self._handle_terminal_condition()
+  File "/Users/floriankockler/Documents/GitHub.nosync/quantumai2/env/stock_trading.py", line 415, in _handle_terminal_condition
+    df_total_value["date"] = self.date_memory
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/pandas/core/frame.py", line 3950, in __setitem__
+    self._set_item(key, value)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/pandas/core/frame.py", line 4143, in _set_item
+    value = self._sanitize_column(value)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/pandas/core/frame.py", line 4871, in _sanitize_column
+    return sanitize_array(value, self.index, copy=True, allow_2d=True)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/pandas/core/construction.py", line 605, in sanitize_array
+    subarr = maybe_infer_to_datetimelike(subarr)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/pandas/core/dtypes/cast.py", line 1204, in maybe_infer_to_datetimelike
+    return lib.maybe_convert_objects(  # type: ignore[return-value]
+  File "pandas/_libs/lib.pyx", line 2567, in pandas._libs.lib.maybe_convert_objects
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/pandas/core/indexes/datetimes.py", line 339, in __new__
+    dtarr = DatetimeArray._from_sequence_not_strict(
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/pandas/core/arrays/datetimes.py", line 333, in _from_sequence_not_strict
+    subarr, tz, inferred_freq = _sequence_to_dt64ns(
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/pandas/core/arrays/datetimes.py", line 2057, in _sequence_to_dt64ns
+    data, inferred_tz = objects_to_datetime64ns(
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/pandas/core/arrays/datetimes.py", line 2177, in objects_to_datetime64ns
+    result, tz_parsed = tslib.array_to_datetime(
+KeyboardInterrupt
+Trial 0 failed with value None.
+A new study created in memory with name: no-name-3ec164f3-480e-46bc-b584-4b02502efffe
