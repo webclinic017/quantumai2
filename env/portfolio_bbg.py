@@ -7,6 +7,8 @@ import matplotlib
 import matplotlib.pyplot as plt
 from gymnasium.utils import seeding
 
+#! ERRORS: sharpe and loss weight need to be referenced with self. 
+
 
 class Portfolio_BBG(gym.Env):
     metadata = {'render.modes': ['human']}

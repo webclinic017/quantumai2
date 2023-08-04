@@ -20,6 +20,31 @@ INDICATORS_STOCKSTATS = [
 
 ]
 
+prior = [
+        "macd",
+        "boll_ub",
+        "boll_lb",
+        "rsi_30",
+        "cci_30",
+        "dx_30",
+        "close_30_sma",
+        "close_60_sma",
+    ]
+
+#Adjusted assuming 6.5 trading hours (then rounded)
+INDICATORS_STOCKSTATS_STOCKTRADING_1H = [
+        "rsi_20", #3 days
+        "rsi_46", #7 days
+        "rsi_91", #14 days
+        "macd_78_169_59", #The default windows are 12 and 26 and 9.
+        "macds_78_169_59",
+        "macdh_78_169_59",
+        "close_325_sma", #50days
+        "close_650_sma", #650days
+
+
+    ]
+
 indicators_caused_issues = ["close_10_mad","rvgi",  "rvgis"]
 
 ECONOMIC_INDICATOR_TICKERS = ['.AAIIB2B G Index',

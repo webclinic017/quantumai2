@@ -10,8 +10,9 @@ from configs import tickers
 
 
 class DataProcessor:
-    def __init__(self,stockstats_tech_indicators =tickers.INDICATORS_STOCKSTATS):
+    def __init__(self,stockstats_tech_indicators =tickers.INDICATORS_STOCKSTATS,stockstats_tech_indicators_1h=tickers.INDICATORS_STOCKSTATS_STOCKTRADING_1H):
         self.stockstats_tech_indicators = stockstats_tech_indicators
+        self.stockstats_tech_indicators_1h = stockstats_tech_indicators_1h
 
     def fill_eco_data(self, df: pd.DataFrame) -> pd.DataFrame:
         # Forward Fill
@@ -25,11 +26,55 @@ class DataProcessor:
         return df
     
     def backward_fill(self, df: pd.DataFrame) -> pd.DataFrame:
-        # Backward fill with mean value
+
         df = df.fillna(method="backfill")
 
         return df
     
+    def forward_fill(self, df: pd.DataFrame) -> pd.DataFrame:
+
+        df = df.fillna(method="ffill")
+
+        return df
+    
+    def add_stockstats_technical_indicator_1h_data(self, data):
+        """
+        calculate technical indicators
+        use stockstats package to add technical inidactors
+        :param data: (df) pandas dataframe
+        :return: (df) pandas dataframe
+        """
+        df = data.copy()
+        df = df.sort_values(by=["tic", "date"])
+        stock = Sdf.retype(df.copy())
+        unique_ticker = stock.tic.unique()
+
+        for indicator in self.stockstats_tech_indicators_1h:
+
+            indicator_df = pd.DataFrame()
+            for i in range(len(unique_ticker)):
+                try:
+                    temp_indicator = stock[stock.tic ==
+                                            unique_ticker[i]][indicator]
+                    temp_indicator = pd.DataFrame(temp_indicator)
+                    temp_indicator["tic"] = unique_ticker[i]
+                    temp_indicator["date"] = df[df.tic == unique_ticker[i]][
+                        "date"
+                    ].to_list()
+                    # indicator_df = indicator_df.append(
+                    #     temp_indicator, ignore_index=True
+                    # )
+                    indicator_df = pd.concat(
+                        [indicator_df, temp_indicator], axis=0, ignore_index=True
+                    )
+                except Exception as e:
+                    print(f"Indicator thrown an exception: {indicator}")
+                    print(e)
+            df = df.merge(
+                indicator_df[["tic", "date", indicator]], on=["tic", "date"], how="left"
+            )
+        df = df.sort_values(by=["date", "tic"])
+        return df
     
     def add_stockstats_technical_indicator(self, data):
         """

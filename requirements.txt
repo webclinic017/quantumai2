@@ -12,3 +12,6 @@ pdblp
 wandb
 stockstats
 plotly
+pandas-market-calendars
+pytz
+eod
