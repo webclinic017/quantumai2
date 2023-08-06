@@ -33,7 +33,7 @@ def optimize_optuna_StockTrading(env_train, env_validate, callbacks, n_trial_run
         start_time = time.time()  # Start the timer
         learning_rate = trial.suggest_float("learning_rate", 0.00001, 0.0001, log=True)
         n_steps = trial.suggest_int("n_steps", 1000, 10000)
-        timesteps = trial.suggest_int("total_timesteps", 800000, 3000000)
+        timesteps = trial.suggest_int("total_timesteps", 10000, 20000)
         gamma = trial.suggest_float("gamma", 0.9, 0.9999, log=True)
         gae_lambda = trial.suggest_float("gae_lambda", 0.9, 1.0, log=True)
         ent_coef = trial.suggest_float("ent_coef", 0.01, 0.1, log=True)
@@ -319,7 +319,7 @@ def optimize_optuna_BBG_Env(env_train, env_validate, callbacks, n_trial_runs=100
         start_time = time.time()  # Start the timer
         learning_rate = trial.suggest_float("learning_rate", 0.00001, 0.0001, log=True)
         n_steps = trial.suggest_int("n_steps", 1000, 10000)
-        timesteps = trial.suggest_int("total_timesteps", 800000, 3000000)
+        timesteps = trial.suggest_int("total_timesteps", 100000, 120000)
         gamma = trial.suggest_float("gamma", 0.9, 0.9999, log=True)
         gae_lambda = trial.suggest_float("gae_lambda", 0.9, 1.0, log=True)
         ent_coef = trial.suggest_float("ent_coef", 0.01, 0.1, log=True)

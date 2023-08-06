@@ -160,7 +160,8 @@ class StockTrading(gym.Env):
         return state[0] + sum(state[1:(self.stock_dim + 1)] * state[(self.stock_dim + 1):(self.stock_dim * 2 + 1)])
 
     def step(self, actions):
-        if self._is_terminal():
+        self.terminal = self._is_terminal()
+        if self.terminal:
             self._handle_terminal_condition()
         else:
             actions = (actions * self.hmax).astype(int)
@@ -397,6 +398,7 @@ class StockTrading(gym.Env):
         return self.day >= len(self.df.index.unique()) - 1
     
     def _handle_terminal_condition(self):
+        print("terminal handling started")
         if self.make_plots:
                 self._make_plots()
         #! Now df_account_value contains the account values for the entire episode
@@ -424,6 +426,7 @@ class StockTrading(gym.Env):
         df_rewards['date'] = self.date_memory[:-1]
         df_daily_return = pd.DataFrame(self.portfolio_return_memory)
         df_daily_return.columns = ['daily_return']
+        print(f"in handle terminal. self.episode:, {self.episode}")
         if self.episode % self.print_verbosity == 0:
             print(f"day: {self.day}, episode: {self.episode}")
             print(f"begin_total_asset: {self.asset_memory[0]:0.2f}")
