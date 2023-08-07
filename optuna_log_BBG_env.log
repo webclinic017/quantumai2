@@ -65,3 +65,72 @@ Trial 0 failed with value None.
 A new study created in memory with name: no-name-01154ac5-40c7-4015-b758-8ef2a35b57c4
 Trial 0 failed with parameters: {'learning_rate': 2.905108828793102e-05, 'n_steps': 6658, 'total_timesteps': 308689, 'gamma': 0.9132726476874692, 'gae_lambda': 0.9050039413285252, 'ent_coef': 0.017633625192678467, 'vf_coef': 0.2542065047281824, 'max_grad_norm': 0.10326649448483462, 'reward_scaling': 0.0007726908655171529, 'hmax': 68129, 'sharpe_ratio_weight': 0.2989793133830735, 'loss_penalty_weight': 0.2145613059314265} because of the following error: The value None could not be cast to float..
 Trial 0 failed with value None.
+A new study created in memory with name: no-name-097f9c1b-29c1-4d15-89c0-9061d8985a8b
+A new study created in memory with name: no-name-097f9c1b-29c1-4d15-89c0-9061d8985a8b
+Trial 0 failed with parameters: {'learning_rate': 1.578078429238655e-05, 'n_steps': 7212, 'total_timesteps': 416039, 'gamma': 0.9040643631582199, 'gae_lambda': 0.9886278042505794, 'ent_coef': 0.015325953890490315, 'vf_coef': 0.14698316222943997, 'max_grad_norm': 0.1453403155969759, 'reward_scaling': 4.973009073307172e-05, 'hmax': 48169, 'sharpe_ratio_weight': 0.3211602362064636, 'loss_penalty_weight': 0.3304035705308335} because of the following error: KeyboardInterrupt().
+Traceback (most recent call last):
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/optuna/study/_optimize.py", line 200, in _run_trial
+    value_or_values = func(trial)
+  File "/Users/floriankockler/Documents/GitHub.nosync/quantumai2/hyperoptimizer/optunaoptimizer.py", line 376, in objective
+    model.learn(total_timesteps=timesteps, callback=callbacks,
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/a2c/a2c.py", line 194, in learn
+    return super().learn(
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 259, in learn
+    continue_training = self.collect_rollouts(self.env, callback, self.rollout_buffer, n_rollout_steps=self.n_steps)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 178, in collect_rollouts
+    new_obs, rewards, dones, infos = env.step(clipped_actions)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/vec_env/base_vec_env.py", line 197, in step
+    return self.step_wait()
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/vec_env/vec_normalize.py", line 187, in step_wait
+    self.obs_rms.update(obs)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/running_mean_std.py", line 38, in update
+    batch_mean = np.mean(arr, axis=0)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/numpy/core/fromnumeric.py", line 3504, in mean
+    return _methods._mean(a, axis=axis, dtype=dtype,
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/numpy/core/_methods.py", line 120, in _mean
+    with _no_nep50_warning():
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/contextlib.py", line 281, in helper
+    return _GeneratorContextManager(func, args, kwds)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/contextlib.py", line 106, in __init__
+    doc = getattr(func, "__doc__", None)
+KeyboardInterrupt
+Trial 0 failed with parameters: {'learning_rate': 1.578078429238655e-05, 'n_steps': 7212, 'total_timesteps': 416039, 'gamma': 0.9040643631582199, 'gae_lambda': 0.9886278042505794, 'ent_coef': 0.015325953890490315, 'vf_coef': 0.14698316222943997, 'max_grad_norm': 0.1453403155969759, 'reward_scaling': 4.973009073307172e-05, 'hmax': 48169, 'sharpe_ratio_weight': 0.3211602362064636, 'loss_penalty_weight': 0.3304035705308335} because of the following error: KeyboardInterrupt().
+Traceback (most recent call last):
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/optuna/study/_optimize.py", line 200, in _run_trial
+    value_or_values = func(trial)
+  File "/Users/floriankockler/Documents/GitHub.nosync/quantumai2/hyperoptimizer/optunaoptimizer.py", line 376, in objective
+    model.learn(total_timesteps=timesteps, callback=callbacks,
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/a2c/a2c.py", line 194, in learn
+    return super().learn(
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 259, in learn
+    continue_training = self.collect_rollouts(self.env, callback, self.rollout_buffer, n_rollout_steps=self.n_steps)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 178, in collect_rollouts
+    new_obs, rewards, dones, infos = env.step(clipped_actions)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/vec_env/base_vec_env.py", line 197, in step
+    return self.step_wait()
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/vec_env/vec_normalize.py", line 187, in step_wait
+    self.obs_rms.update(obs)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/running_mean_std.py", line 38, in update
+    batch_mean = np.mean(arr, axis=0)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/numpy/core/fromnumeric.py", line 3504, in mean
+    return _methods._mean(a, axis=axis, dtype=dtype,
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/numpy/core/_methods.py", line 120, in _mean
+    with _no_nep50_warning():
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/contextlib.py", line 281, in helper
+    return _GeneratorContextManager(func, args, kwds)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/contextlib.py", line 106, in __init__
+    doc = getattr(func, "__doc__", None)
+KeyboardInterrupt
+Trial 0 failed with value None.
+Trial 0 failed with value None.
+A new study created in memory with name: no-name-65e01bba-404a-4906-8e8f-ce00b206d68b
+A new study created in memory with name: no-name-65e01bba-404a-4906-8e8f-ce00b206d68b
+Trial 0 failed with parameters: {'learning_rate': 2.9968477941528427e-05, 'n_steps': 3359, 'total_timesteps': 385340, 'gamma': 0.9016133484653102, 'gae_lambda': 0.9938859158696166, 'ent_coef': 0.03188944507845674, 'vf_coef': 0.2758780915322775, 'max_grad_norm': 0.21558218859568312, 'reward_scaling': 0.00015057582374173516, 'hmax': 86248, 'sharpe_ratio_weight': 0.27622842270316394, 'loss_penalty_weight': 0.18093454196846565} because of the following error: The value None could not be cast to float..
+Trial 0 failed with parameters: {'learning_rate': 2.9968477941528427e-05, 'n_steps': 3359, 'total_timesteps': 385340, 'gamma': 0.9016133484653102, 'gae_lambda': 0.9938859158696166, 'ent_coef': 0.03188944507845674, 'vf_coef': 0.2758780915322775, 'max_grad_norm': 0.21558218859568312, 'reward_scaling': 0.00015057582374173516, 'hmax': 86248, 'sharpe_ratio_weight': 0.27622842270316394, 'loss_penalty_weight': 0.18093454196846565} because of the following error: The value None could not be cast to float..
+Trial 0 failed with value None.
+Trial 0 failed with value None.
+A new study created in memory with name: no-name-3bdcc59f-246e-44af-9426-ec8478730151
+A new study created in memory with name: no-name-3bdcc59f-246e-44af-9426-ec8478730151
+A new study created in memory with name: no-name-3bdcc59f-246e-44af-9426-ec8478730151
+A new study created in memory with name: no-name-95cc88cc-fb6c-4491-9f5c-2d14974a6c3e
+A new study created in memory with name: no-name-e1279067-5a83-4731-bc3b-678a994fa646
