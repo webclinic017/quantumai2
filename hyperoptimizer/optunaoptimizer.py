@@ -330,7 +330,7 @@ def optimize_optuna_BBG_Env(env_train, env_validate, callbacks, n_trial_runs=100
         learning_rate = trial.suggest_float(
             "learning_rate", 0.00001, 0.0001, log=True)
         n_steps = trial.suggest_int("n_steps", 1000, 10000)
-        timesteps = trial.suggest_int("total_timesteps", 100000, 120000)
+        timesteps = trial.suggest_int("total_timesteps", 300000, 1000000)
         gamma = trial.suggest_float("gamma", 0.9, 0.9999, log=True)
         gae_lambda = trial.suggest_float("gae_lambda", 0.9, 1.0, log=True)
         ent_coef = trial.suggest_float("ent_coef", 0.01, 0.1, log=True)
@@ -399,9 +399,9 @@ def optimize_optuna_BBG_Env(env_train, env_validate, callbacks, n_trial_runs=100
     try:
         study = optuna.create_study(direction="maximize")
         study.optimize(objective, n_trials=n_trial_runs,
-                       callbacks=[save_checkpoint])
+                       callbacks=None, gc_after_trial=True)
         # Save the best model to a file
-        best_model.save("best_model_bbg")
+        # best_model.save("best_model_bbg")
     except Exception as e:
         print(f"Exception during trial : {e}")
 

@@ -6,6 +6,7 @@ import pandas as pd
 import matplotlib
 import matplotlib.pyplot as plt
 from gymnasium.utils import seeding
+import collections
 
 #! ERRORS: sharpe and loss weight need to be referenced with self.
 
@@ -16,14 +17,13 @@ class Portfolio_BBG(gym.Env):
     def __init__(self, df, action_space, stock_dim, sharpe_ratio_weight, loss_penalty_weight, stock_list, short_selling_allowed, hmax: int,
                  num_stock_shares: list[int], take_leverage_allowed, trade_cost_pct,
                  initial_amount: int, state_space, indicators, reward_scaling, previous_state=[],
-                 day=0, initial=True, print_verbosity=1, make_plots: bool = False, model_name="", mode="", iteration="", state_window=200):
+                 day=0, initial=True, print_verbosity=1, make_plots: bool = False, model_name="", mode="", iteration="", state_window=200, N=5):
         # super().__init__()
         # action space = number of stocks
         self.terminal = False
         self.action_space = action_space
         self.previous_state = previous_state
         self.state_window = state_window
-        self.model_name = model_name
         self.reward_scaling = reward_scaling
         self.sharpe_ratio_weight = sharpe_ratio_weight
         self.loss_penalty_weight = loss_penalty_weight
@@ -45,24 +45,21 @@ class Portfolio_BBG(gym.Env):
         self.initial_amount = initial_amount
         self.data = self.df.loc[self.day, :]
         self.print_verbosity = print_verbosity
-        #! je nach Stock oder portfolio anderes definiert
-        # self.action_space = spaces.Box(low=0, high=1,shape=(self.action_space,))
-        # self.observation_space = spaces.Box(low=0, high=1,shape=(self.state_space,))
         self.action_space = spaces.Box(
             low=-1, high=1, shape=(self.action_space,))
         self.observation_space = spaces.Box(
             low=-np.inf, high=np.inf, shape=(self.state_space,))
-        #! trial if fixed at 9 works
-        # self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(9,))
-        # print("INIT - Action space:", self.action_space)
-        # print("INIT - Observation space:", self.observation_space)
         self.state = self._initiate_state()
+        # Smoothing
+        self.N = N
+        self.actions_buffer = collections.deque(maxlen=self.N)
 
         # Initiate Reward
         self.cost = 0
         self.trades = 0
         self.reward = 0
         self.episode = 0
+        self.current_step_cost = 0
         # memorize total balance
         self.asset_memory = [self.initial_amount+np.sum(
             np.array(self.num_stock_shares)
@@ -87,12 +84,6 @@ class Portfolio_BBG(gym.Env):
             std_returns = 1e-6  # small constant to avoid division by zero
         return np.mean(returns) / std_returns * np.sqrt(252)
 
-    def calculate_reward(self, begin_total_asset, end_total_asset, sharpe_ratio_weight, loss_penalty_weight):
-        total_asset_reward = end_total_asset - begin_total_asset
-        sharpe_ratio = self.calculate_sharpe_ratio()
-        loss_penalty = -1 * np.min([0, end_total_asset - begin_total_asset])
-        return total_asset_reward + sharpe_ratio_weight * sharpe_ratio + loss_penalty_weight * loss_penalty
-
     def _sell_stock(self, index, action):
         if self.short_selling_allowed:
             sell_num_shares = abs(action)
@@ -115,6 +106,8 @@ class Portfolio_BBG(gym.Env):
                 self.state[index + 1] * sell_num_shares * self.trade_cost_pct
             )
             self.trades += 1
+        self.current_step_cost += self.state[index +
+                                             1] * sell_num_shares * self.trade_cost_pct
 
         return sell_num_shares
 
@@ -140,6 +133,8 @@ class Portfolio_BBG(gym.Env):
             self.cost += (self.state[index + 1] *
                           buy_num_shares * self.trade_cost_pct)
             self.trades += 1
+        self.current_step_cost += self.state[index +
+                                             1] * buy_num_shares * self.trade_cost_pct
 
         return buy_num_shares
 
@@ -148,101 +143,38 @@ class Portfolio_BBG(gym.Env):
         plt.savefig(f"results/account_value_trade_{self.episode}.png")
         plt.close()
 
+    def calculate_reward(self, begin_total_asset, end_total_asset):
+        total_asset_reward = end_total_asset - \
+            begin_total_asset - self.current_step_cost
+        sharpe_ratio = self.calculate_sharpe_ratio()
+        loss_penalty = -1 * np.min([0, end_total_asset - begin_total_asset])
+        return (total_asset_reward + self.sharpe_ratio_weight * sharpe_ratio + self.loss_penalty_weight * loss_penalty)*self.reward_scaling
+
+    def get_smoothed_action(self):
+        return sum(self.actions_buffer)/len(self.actions_buffer)
+
     def step(self, actions):
-        # Execute one time step within the environment
-        # return observation, reward, done, info
         self.terminal = self.day >= len(self.df.index.unique()) - 1
         if self.terminal:
-            if self.make_plots:
-                self._make_plots()
-            #! Now df_account_value contains the account values for the entire episode
-            #! You can analyze or visualize df_account_value here, or save it to a file
-            df_account_value = self.save_asset_memory()
-            end_total_asset = self.state[0] + sum(np.array(self.state[1:(self.stock_dim + 1)]) * np.array(
-                self.state[(self.stock_dim + 1):(self.stock_dim * 2 + 1)]))
-            df_total_value = pd.DataFrame(self.asset_memory)
-            total_reward = (
-                self.state[0]
-                + sum(
-                    np.array(self.state[1:(self.stock_dim + 1)])
-                    * np.array(self.state[(self.stock_dim + 1):(self.stock_dim * 2 + 1)])
-                ) - self.asset_memory[0]
-            )
-            df_total_value.columns = ['account_value']
-            df_total_value["date"] = self.date_memory
-            df_total_value['daily_return'] = df_total_value['account_value'].pct_change(
-                1)
-            if df_total_value['daily_return'].std() != 0:
-                sharpe = (
-                    (252**0.5)*df_total_value['daily_return'].mean() /
-                    df_total_value['daily_return'].std()
-                )
-            df_rewards = pd.DataFrame(self.rewards_memory)
-            df_rewards.columns = ['account_rewards']
-            df_rewards['date'] = self.date_memory[:-1]
-            df_daily_return = pd.DataFrame(self.portfolio_return_memory)
-            df_daily_return.columns = ['daily_return']
-            if self.episode % self.print_verbosity == 0:
-                print(f"day: {self.day}, episode: {self.episode}")
-                print(f"begin_total_asset: {self.asset_memory[0]:0.2f}")
-                print(f"end_total_asset: {end_total_asset:0.2f}")
-                print(f"total_reward: {total_reward:0.2f}")
-                print(f"total_cost: {self.cost:0.2f}")
-                print(f"total_trades: {self.trades}")
-                if df_total_value["daily_return"].std() != 0:
-                    print(f"Sharpe: {sharpe:0.3f}")
-                print("=================================")
-            if (self.model_name != "") and (self.mode != ""):
-                df_actions = self.save_action_memory()
-                df_actions.to_csv(
-                    "results/actions_{}_{}_{}.csv".format(
-                        self.mode, self.model_name, self.iteration
-                    )
-                )
-                df_total_value.to_csv(
-                    "results/account_value_{}_{}_{}.csv".format(
-                        self.mode, self.model_name, self.iteration
-                    ),
-                    index=False,
-                )
-                df_rewards.to_csv(
-                    "results/account_rewards_{}_{}_{}.csv".format(
-                        self.mode, self.model_name, self.iteration
-                    ),
-                    index=False,
-                )
-                plt.plot(self.asset_memory, "r")
-                plt.savefig(
-                    "results/account_value_{}_{}_{}.png".format(
-                        self.mode, self.model_name, self.iteration
-                    )
-                )
-                plt.close()
-
-            return self.state, self.reward, self.terminal, False, {}
+            self._handle_terminal_condition()
         else:
-            actions = actions * self.hmax
-            # that could cause issues maybe as fractional is not handled (glaub ich)
-            # convert into integer because we can't by fraction of shares
+            self.actions_buffer.append(actions)
+            smoothed_value = self.get_smoothed_action()
+
+            self.current_step_cost = 0
+            actions = np.clip(actions * smoothed_value, -self.hmax, self.hmax)
             actions = actions.astype(int)
             begin_total_asset = self.state[0] + sum(
                 np.array(self.state[1:(self.stock_dim + 1)])
                 * np.array(self.state[(self.stock_dim + 1):(self.stock_dim * 2 + 1)])
             )
-            # print("begin_total_asset:{}".format(begin_total_asset))
             argsort_actions = np.argsort(actions)
-            #! The amount the agent wants to sell can be interpreted as the conviction
             sell_index = argsort_actions[: np.where(actions < 0)[0].shape[0]]
             buy_index = argsort_actions[::-
                                         1][: np.where(actions > 0)[0].shape[0]]
             for index in sell_index:
-                # print(f"Num shares before: {self.state[index+self.stock_dim+1]}")
-                # print(f'take sell action before : {actions[index]}')
                 actions[index] = self._sell_stock(index, actions[index]) * (-1)
-                # print(f'take sell action after : {actions[index]}')
-                # print(f"Num shares after: {self.state[index+self.stock_dim+1]}")
             for index in buy_index:
-                # print('take buy action: {}'.format(actions[index]))
                 actions[index] = self._buy_stock(index, actions[index])
             self.actions_memory.append(actions)
             self.day += 1
@@ -255,13 +187,12 @@ class Portfolio_BBG(gym.Env):
             self.asset_memory.append(end_total_asset)
             self.date_memory.append(self._get_date())
             #! More Reward inputs
-            self.reward = self.calculate_reward(
-                begin_total_asset, end_total_asset, self.sharpe_ratio_weight, self.loss_penalty_weight)
-            self.rewards_memory.append(self.reward)
-            self.reward = self.reward*self.reward_scaling
-            self.state_memory.append(self.state)
             portfolio_return = (end_total_asset / begin_total_asset) - 1
             self.portfolio_return_memory.append(portfolio_return)
+            self.reward = self.calculate_reward(
+                begin_total_asset, end_total_asset)
+            self.rewards_memory.append(self.reward)
+            self.state_memory.append(self.state)
             self.stock_holdings_memory.append(
                 self.state[(self.stock_dim + 1):(self.stock_dim * 2 + 1)].copy())
             self.portfolio_memory["cash"].append(self.state[0])
@@ -306,6 +237,50 @@ class Portfolio_BBG(gym.Env):
 
         # chatgpt suggested to convert self. satet to np array
         return self.state, {}
+
+    def _handle_terminal_condition(self):
+        if self.make_plots:
+            self._make_plots()
+        df_account_value = self.save_asset_memory()
+        end_total_asset = self.state[0] + sum(np.array(self.state[1:(self.stock_dim + 1)]) * np.array(
+            self.state[(self.stock_dim + 1):(self.stock_dim * 2 + 1)]))
+        df_total_value = pd.DataFrame(self.asset_memory)
+        total_reward = (
+            self.state[0]
+            + sum(
+                np.array(self.state[1:(self.stock_dim + 1)])
+                * np.array(self.state[(self.stock_dim + 1):(self.stock_dim * 2 + 1)])
+            ) - self.asset_memory[0]
+        )
+        df_total_value.columns = ['account_value']
+        df_total_value["date"] = self.date_memory
+        df_total_value['daily_return'] = df_total_value['account_value'].pct_change(
+            1)
+        if df_total_value['daily_return'].std() != 0:
+            sharpe = (
+                (252**0.5)*df_total_value['daily_return'].mean() /
+                df_total_value['daily_return'].std()
+            )
+        df_rewards = pd.DataFrame(self.rewards_memory)
+        df_rewards.columns = ['account_rewards']
+        df_rewards['date'] = self.date_memory[:-1]
+        df_daily_return = pd.DataFrame(self.portfolio_return_memory)
+        df_daily_return.columns = ['daily_return']
+        if self.episode % self.print_verbosity == 0:
+            self.print_run_outcome(self, end_total_asset,
+                                   total_reward, df_total_value, sharpe)
+        return self.state, self.reward, self.terminal, False, {}
+
+    def print_run_outcome(self, end_total_asset, total_reward, df_total_value, sharpe):
+        print(f"day: {self.day}, episode: {self.episode}")
+        print(f"begin_total_asset: {self.asset_memory[0]:0.2f}")
+        print(f"end_total_asset: {end_total_asset:0.2f}")
+        print(f"total_reward: {total_reward:0.2f}")
+        print(f"total_cost: {self.cost:0.2f}")
+        print(f"total_trades: {self.trades}")
+        if df_total_value["daily_return"].std() != 0:
+            print(f"Sharpe: {sharpe:0.3f}")
+        print("=================================")
 
     def render(self, mode='human', close=False):
         # Render the environment to the screen
