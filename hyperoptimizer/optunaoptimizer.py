@@ -115,12 +115,12 @@ def optimize_optuna_StockTrading(env_train, env_validate, callbacks, n_trial_run
     try:
         study = optuna.create_study(direction="maximize")
         study.optimize(objective, n_trials=n_trial_runs,
-                       callbacks=[save_checkpoint], n_jobs=n_jobs)
+                       callbacks=None, n_jobs=n_jobs, gc_after_trial=True)
         # Save the best model to a file
-        if best_model is not None:
-            best_model.save("best_model_stock_trading")
-        else:
-            print("No best model to save. All trials may have failed.")
+        # if best_model is not None:
+        #     best_model.save("best_model_stock_trading")
+        # else:
+        #     print("No best model to save. All trials may have failed.")
     except Exception as e:
         print(f"Exception during trial : {e}")
 
