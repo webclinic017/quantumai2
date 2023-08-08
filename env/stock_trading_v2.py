@@ -39,7 +39,8 @@ class StockTrading(gym.Env):
                  make_plots: bool = False,
                  model_name="",
                  mode="",
-                 iteration=""
+                 iteration="",
+                 max_number_of_trades=1000
                  ):
         # super().__init__()
         # action space = number of stocks
@@ -59,6 +60,7 @@ class StockTrading(gym.Env):
         self.short_selling_allowed = short_selling_allowed
         self.take_leverage_allowed = take_leverage_allowed
         self.day = day
+        self.max_number_of_trades = max_number_of_trades
         self.mode = ""
         self.iteration = ""
         self.make_plots = make_plots
@@ -110,23 +112,20 @@ class StockTrading(gym.Env):
     def calculate_reward(self, begin_total_asset, end_total_asset):
         total_asset_reward = end_total_asset - \
             begin_total_asset - self.current_step_cost
-        sharpe_ratio = self.calculate_sharpe_ratio()
-        loss_penalty = -1 * np.min([0, end_total_asset - begin_total_asset])
-
-        # High profit incentive
-        # profit threshold (e.g. 10%)
-        # bonus reward for high profit
-        if total_asset_reward >= self.profit_threshold * begin_total_asset:
-            total_asset_reward += self.high_profit_bonus
-
-        # Partial selling incentive
-        # bonus reward for partial sell
-        # check actions in the last step
-        for action in self.actions_memory[-1]:
-            if action < 0:
-                total_asset_reward += self.partial_sell_bonus
-        total_asset_reward *= self.reward_scaling
-        return total_asset_reward + self.sharpe_ratio_weight * sharpe_ratio + self.loss_penalty_weight * loss_penalty
+        # sharpe_ratio = self.calculate_sharpe_ratio()
+        # trade_frequency_penalty = -100 * (self.trades**1.6)
+        # loss_penalty = -1 * np.min([0, end_total_asset - begin_total_asset])
+        # if total_asset_reward >= self.profit_threshold * begin_total_asset:
+        #     total_asset_reward += self.high_profit_bonus
+        # for action in self.actions_memory[-1]:
+        #     if action < 0:
+        #         total_asset_reward += self.partial_sell_bonus
+        # total_asset_reward *= self.reward_scaling
+        # sharpe_ratio *= self.reward_scaling
+        # loss_penalty *= self.reward_scaling
+        # trade_frequency_penalty *= self.reward_scaling
+        # return total_asset_reward + self.sharpe_ratio_weight * sharpe_ratio + self.loss_penalty_weight * loss_penalty + trade_frequency_penalty
+        return total_asset_reward
 
     def _sell_stock(self, index, action):
         if self.short_selling_allowed:
@@ -198,10 +197,12 @@ class StockTrading(gym.Env):
             sell_index = argsort_actions[: np.where(actions < 0)[0].shape[0]]
             buy_index = argsort_actions[::-
                                         1][: np.where(actions > 0)[0].shape[0]]
-            for index in sell_index:
-                actions[index] = self._sell_stock(index, actions[index]) * (-1)
-            for index in buy_index:
-                actions[index] = self._buy_stock(index, actions[index])
+            if self.trades < self.max_number_of_trades:
+                for index in sell_index:
+                    actions[index] = self._sell_stock(
+                        index, actions[index]) * (-1)
+                for index in buy_index:
+                    actions[index] = self._buy_stock(index, actions[index])
             self.actions_memory.append(actions)
             self.day += 1
             self.data = self.df.loc[self.day, :]
@@ -330,7 +331,7 @@ class StockTrading(gym.Env):
             state = (
                 [self.state[0]]
                 + self.data.close.values.tolist()
-                + list(self.state[(self.stock_dim + 1)                       : (self.stock_dim * 2 + 1)])
+                + list(self.state[(self.stock_dim + 1): (self.stock_dim * 2 + 1)])
                 + sum(
                     [
                         self.data[indicator].values.tolist()

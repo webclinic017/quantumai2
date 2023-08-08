@@ -1,0 +1,67 @@
+wandb_version: 1
+
+ent_coef:
+  desc: null
+  value: 0.08174450051115432
+gae_lambda:
+  desc: null
+  value: 0.9353325085852662
+gamma:
+  desc: null
+  value: 0.96466716130102
+hmax:
+  desc: null
+  value: 8624
+learning_rate:
+  desc: null
+  value: 8.195607481875735e-05
+loss_penalty_weight:
+  desc: null
+  value: 0.889208698658391
+max_grad_norm:
+  desc: null
+  value: 0.21045612156960003
+n_steps:
+  desc: null
+  value: 6863
+reward_scaling:
+  desc: null
+  value: 0.0003281258141097799
+sharpe_ratio_weight:
+  desc: null
+  value: 0.43085121987861186
+vf_coef:
+  desc: null
+  value: 0.1837777953668505
+_wandb:
+  desc: null
+  value:
+    python_version: 3.10.12
+    cli_version: 0.15.7
+    framework: torch
+    is_jupyter_run: true
+    is_kaggle_kernel: false
+    start_time: 1691484272.876173
+    t:
+      1:
+      - 1
+      - 5
+      - 35
+      - 53
+      - 55
+      2:
+      - 1
+      - 5
+      - 35
+      - 53
+      - 55
+      3:
+      - 2
+      - 23
+      - 37
+      4: 3.10.12
+      5: 0.15.7
+      8:
+      - 1
+      - 4
+      - 5

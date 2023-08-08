@@ -134,3 +134,95 @@ A new study created in memory with name: no-name-3bdcc59f-246e-44af-9426-ec84787
 A new study created in memory with name: no-name-3bdcc59f-246e-44af-9426-ec8478730151
 A new study created in memory with name: no-name-95cc88cc-fb6c-4491-9f5c-2d14974a6c3e
 A new study created in memory with name: no-name-e1279067-5a83-4731-bc3b-678a994fa646
+Trial 0 failed with parameters: {'learning_rate': 6.42820118387985e-05, 'n_steps': 8960, 'total_timesteps': 712164, 'gamma': 0.9708970633675434, 'gae_lambda': 0.9035198575951779, 'ent_coef': 0.038316481605053694, 'vf_coef': 0.12748266827117466, 'max_grad_norm': 0.3684566978291549, 'reward_scaling': 1.697105777259161e-05, 'hmax': 59368, 'sharpe_ratio_weight': 0.8295081112424038, 'loss_penalty_weight': 0.24780481264498996} because of the following error: KeyboardInterrupt().
+Traceback (most recent call last):
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/optuna/study/_optimize.py", line 200, in _run_trial
+    value_or_values = func(trial)
+  File "/Users/floriankockler/Documents/GitHub.nosync/quantumai2/hyperoptimizer/optunaoptimizer.py", line 376, in objective
+    model.learn(total_timesteps=timesteps, callback=callbacks,
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/a2c/a2c.py", line 194, in learn
+    return super().learn(
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 259, in learn
+    continue_training = self.collect_rollouts(self.env, callback, self.rollout_buffer, n_rollout_steps=self.n_steps)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 178, in collect_rollouts
+    new_obs, rewards, dones, infos = env.step(clipped_actions)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/vec_env/base_vec_env.py", line 197, in step
+    return self.step_wait()
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/vec_env/vec_normalize.py", line 178, in step_wait
+    obs, rewards, dones, infos = self.venv.step_wait()
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/vec_env/dummy_vec_env.py", line 58, in step_wait
+    obs, self.buf_rews[env_idx], terminated, truncated, self.buf_infos[env_idx] = self.envs[env_idx].step(
+  File "/var/folders/_2/x__vfndx65bd1j3y57l3q4wc0000gn/T/ipykernel_4119/849123512.py", line 188, in step
+    self.date_memory.append(self._get_date())
+  File "/var/folders/_2/x__vfndx65bd1j3y57l3q4wc0000gn/T/ipykernel_4119/849123512.py", line 347, in _get_date
+    if len(self.df.tic.unique()) > 1:
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/pandas/core/series.py", line 2194, in unique
+    return super().unique()
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/pandas/core/base.py", line 1030, in unique
+    result = algorithms.unique1d(values)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/pandas/core/algorithms.py", line 390, in unique
+    return unique_with_mask(values)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/pandas/core/algorithms.py", line 425, in unique_with_mask
+    hashtable, values = _get_hashtable_algo(values)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/pandas/core/algorithms.py", line 264, in _get_hashtable_algo
+    ndtype = _check_object_for_strings(values)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/pandas/core/algorithms.py", line 286, in _check_object_for_strings
+    if lib.infer_dtype(values, skipna=False) in ["string"]:
+KeyboardInterrupt
+Trial 0 failed with value None.
+A new study created in memory with name: no-name-b3891d34-f100-4d16-862d-6248386e9d30
+Trial 0 finished with value: 18.727129806301832 and parameters: {'learning_rate': 6.995673227912843e-05, 'n_steps': 3119, 'total_timesteps': 508290, 'gamma': 0.9894932254404468, 'gae_lambda': 0.9156582254203178, 'ent_coef': 0.08773949856580812, 'vf_coef': 0.18043917972408116, 'max_grad_norm': 0.1283218938404825, 'reward_scaling': 1.0936096326388394e-05, 'hmax': 43951, 'sharpe_ratio_weight': 0.2830251911351397, 'loss_penalty_weight': 0.5998555424358567}. Best is trial 0 with value: 18.727129806301832.
+Trial 1 finished with value: -1.053490769205257 and parameters: {'learning_rate': 2.377415148905425e-05, 'n_steps': 3798, 'total_timesteps': 488831, 'gamma': 0.9761946521999934, 'gae_lambda': 0.9997340521064256, 'ent_coef': 0.058306729766054305, 'vf_coef': 0.23575499806409395, 'max_grad_norm': 0.13817293938324027, 'reward_scaling': 0.00022483109231676699, 'hmax': 91190, 'sharpe_ratio_weight': 0.826041999823103, 'loss_penalty_weight': 0.23203391976240778}. Best is trial 0 with value: 18.727129806301832.
+Trial 2 finished with value: 0.34027756531061754 and parameters: {'learning_rate': 8.630895184333298e-05, 'n_steps': 1203, 'total_timesteps': 304781, 'gamma': 0.9972083017942791, 'gae_lambda': 0.9291500260512192, 'ent_coef': 0.04030251296654942, 'vf_coef': 0.17105840525059063, 'max_grad_norm': 0.24330676345120947, 'reward_scaling': 0.00014977533944773844, 'hmax': 92085, 'sharpe_ratio_weight': 0.2355013420252079, 'loss_penalty_weight': 0.24399398859220095}. Best is trial 0 with value: 18.727129806301832.
+Trial 3 finished with value: 0.42936798581866925 and parameters: {'learning_rate': 1.7058822787805666e-05, 'n_steps': 4317, 'total_timesteps': 725640, 'gamma': 0.9145281487064072, 'gae_lambda': 0.991099239313457, 'ent_coef': 0.029668722469294227, 'vf_coef': 0.16127515185247324, 'max_grad_norm': 0.35077495034164413, 'reward_scaling': 0.0007724656519606665, 'hmax': 89359, 'sharpe_ratio_weight': 0.6220292440975203, 'loss_penalty_weight': 0.36214545518388125}. Best is trial 0 with value: 18.727129806301832.
+Trial 4 finished with value: 0.9127826954939338 and parameters: {'learning_rate': 2.2461447762857927e-05, 'n_steps': 8837, 'total_timesteps': 992913, 'gamma': 0.9318402155315292, 'gae_lambda': 0.9349767008257092, 'ent_coef': 0.031579879820541376, 'vf_coef': 0.2796617773094347, 'max_grad_norm': 0.16661019472788138, 'reward_scaling': 7.194037979741996e-05, 'hmax': 84240, 'sharpe_ratio_weight': 0.8274811277327544, 'loss_penalty_weight': 0.20994079913486421}. Best is trial 0 with value: 18.727129806301832.
+Trial 5 finished with value: 6.466408208916209 and parameters: {'learning_rate': 8.664770553459491e-05, 'n_steps': 2572, 'total_timesteps': 990633, 'gamma': 0.9266776162844096, 'gae_lambda': 0.9930434689144918, 'ent_coef': 0.026389347089250233, 'vf_coef': 0.1278965399044476, 'max_grad_norm': 0.19652050153627165, 'reward_scaling': 2.1288844012391942e-05, 'hmax': 96684, 'sharpe_ratio_weight': 0.6101330358094147, 'loss_penalty_weight': 0.18582036972141386}. Best is trial 0 with value: 18.727129806301832.
+Trial 6 finished with value: 1.2817509386735764 and parameters: {'learning_rate': 3.218734294939689e-05, 'n_steps': 9287, 'total_timesteps': 662971, 'gamma': 0.9153152009365985, 'gae_lambda': 0.9260403982757088, 'ent_coef': 0.03926848495240643, 'vf_coef': 0.11232808245241829, 'max_grad_norm': 0.1552032487607828, 'reward_scaling': 2.7160329566240564e-05, 'hmax': 57809, 'sharpe_ratio_weight': 0.8355402661738123, 'loss_penalty_weight': 0.2782932898510099}. Best is trial 0 with value: 18.727129806301832.
+Trial 7 finished with value: 8.93843667205483 and parameters: {'learning_rate': 5.330515245515764e-05, 'n_steps': 4773, 'total_timesteps': 564746, 'gamma': 0.9502624339566735, 'gae_lambda': 0.9892334755272205, 'ent_coef': 0.01105685394527028, 'vf_coef': 0.2546062661550263, 'max_grad_norm': 0.1801634680703854, 'reward_scaling': 2.896233599260525e-05, 'hmax': 82042, 'sharpe_ratio_weight': 0.3885098784852856, 'loss_penalty_weight': 0.41527650617533995}. Best is trial 0 with value: 18.727129806301832.
+Trial 8 finished with value: 0.5482358864117487 and parameters: {'learning_rate': 1.701991505721755e-05, 'n_steps': 7087, 'total_timesteps': 368315, 'gamma': 0.9467395456710829, 'gae_lambda': 0.9630888163949334, 'ent_coef': 0.09235671567528973, 'vf_coef': 0.21062417987575133, 'max_grad_norm': 0.16915819746457833, 'reward_scaling': 4.327158318388702e-05, 'hmax': 80148, 'sharpe_ratio_weight': 0.4688347612377054, 'loss_penalty_weight': 0.23260943776301302}. Best is trial 0 with value: 18.727129806301832.
+Trial 9 finished with value: 0.07635676556936914 and parameters: {'learning_rate': 6.36703994521148e-05, 'n_steps': 8016, 'total_timesteps': 381240, 'gamma': 0.9757199319601174, 'gae_lambda': 0.9298308624919626, 'ent_coef': 0.012116752984317141, 'vf_coef': 0.17292026944136035, 'max_grad_norm': 0.16028869873614301, 'reward_scaling': 0.0008404882059732087, 'hmax': 68899, 'sharpe_ratio_weight': 0.7299255450207416, 'loss_penalty_weight': 0.2165010075156118}. Best is trial 0 with value: 18.727129806301832.
+A new study created in memory with name: no-name-9da201d4-e30c-4591-afa7-9f49d61489db
+Trial 0 finished with value: 16.042107966269008 and parameters: {'learning_rate': 2.494007616372345e-05, 'n_steps': 8729, 'total_timesteps': 504998, 'gamma': 0.9623769972981521, 'gae_lambda': 0.9751966136564306, 'ent_coef': 0.022647904329943326, 'vf_coef': 0.24955819056428472, 'max_grad_norm': 0.15680035678355908, 'reward_scaling': 8.567271696972777e-05, 'hmax': 66396, 'sharpe_ratio_weight': 0.49590662516739387, 'loss_penalty_weight': 0.22968274104235378}. Best is trial 0 with value: 16.042107966269008.
+Trial 1 finished with value: -8.040406894795888 and parameters: {'learning_rate': 5.827323605365839e-05, 'n_steps': 3787, 'total_timesteps': 485556, 'gamma': 0.9284689915645739, 'gae_lambda': 0.9497710379696682, 'ent_coef': 0.01790270573581529, 'vf_coef': 0.10644632715342857, 'max_grad_norm': 0.35973984542212567, 'reward_scaling': 0.0001501876562341069, 'hmax': 75711, 'sharpe_ratio_weight': 0.27214640518812055, 'loss_penalty_weight': 0.2718766246512075}. Best is trial 0 with value: 16.042107966269008.
+Trial 2 finished with value: 5.9773603705443294 and parameters: {'learning_rate': 2.422634340847146e-05, 'n_steps': 1407, 'total_timesteps': 969486, 'gamma': 0.9461011150758349, 'gae_lambda': 0.9357766767645888, 'ent_coef': 0.014122303717859443, 'vf_coef': 0.2841246126033008, 'max_grad_norm': 0.21344778724783167, 'reward_scaling': 7.037976990458533e-05, 'hmax': 55773, 'sharpe_ratio_weight': 0.235301664231642, 'loss_penalty_weight': 0.21285533511668833}. Best is trial 0 with value: 16.042107966269008.
+Trial 3 failed with parameters: {'learning_rate': 2.507867448838971e-05, 'n_steps': 8328, 'total_timesteps': 658252, 'gamma': 0.9652734740665218, 'gae_lambda': 0.9816314331362955, 'ent_coef': 0.08653956908188516, 'vf_coef': 0.1420827599849837, 'max_grad_norm': 0.22410490028326502, 'reward_scaling': 1.6309781810506985e-05, 'hmax': 55716, 'sharpe_ratio_weight': 0.6018378810798478, 'loss_penalty_weight': 0.2178068386477834} because of the following error: The value None could not be cast to float..
+Trial 3 failed with value None.
+Trial 4 failed with parameters: {'learning_rate': 2.5095596387665743e-05, 'n_steps': 5998, 'total_timesteps': 337151, 'gamma': 0.9064216740691553, 'gae_lambda': 0.9227388148789919, 'ent_coef': 0.03993262384545035, 'vf_coef': 0.132609979825593, 'max_grad_norm': 0.13910136024150166, 'reward_scaling': 6.886179842958112e-05, 'hmax': 53253, 'sharpe_ratio_weight': 0.45736722993876905, 'loss_penalty_weight': 0.11179835161252027} because of the following error: The value None could not be cast to float..
+Trial 4 failed with value None.
+Trial 5 failed with parameters: {'learning_rate': 8.94431784946391e-05, 'n_steps': 1306, 'total_timesteps': 823125, 'gamma': 0.9497110311880195, 'gae_lambda': 0.9261010376553654, 'ent_coef': 0.07884712405588756, 'vf_coef': 0.10872594219802711, 'max_grad_norm': 0.18956631382810785, 'reward_scaling': 0.00018905937766521905, 'hmax': 57875, 'sharpe_ratio_weight': 0.2981839086171392, 'loss_penalty_weight': 0.18731401620725122} because of the following error: The value None could not be cast to float..
+Trial 5 failed with value None.
+Trial 6 failed with parameters: {'learning_rate': 5.180654849384663e-05, 'n_steps': 9094, 'total_timesteps': 620617, 'gamma': 0.9894387302209345, 'gae_lambda': 0.9517083905641688, 'ent_coef': 0.04663337085132842, 'vf_coef': 0.21424489563905078, 'max_grad_norm': 0.14461453792531667, 'reward_scaling': 0.0006128585442422958, 'hmax': 58173, 'sharpe_ratio_weight': 0.581455135016961, 'loss_penalty_weight': 0.3109208759302528} because of the following error: The value None could not be cast to float..
+Trial 6 failed with value None.
+Trial 7 failed with parameters: {'learning_rate': 1.6091043769022595e-05, 'n_steps': 5449, 'total_timesteps': 477046, 'gamma': 0.9180401491352125, 'gae_lambda': 0.9856735202880405, 'ent_coef': 0.08684476719932376, 'vf_coef': 0.10546591037580286, 'max_grad_norm': 0.20142478797722554, 'reward_scaling': 0.0001405259839247588, 'hmax': 66071, 'sharpe_ratio_weight': 0.659528368273535, 'loss_penalty_weight': 0.2884934732605774} because of the following error: The value None could not be cast to float..
+Trial 7 failed with value None.
+Trial 8 failed with parameters: {'learning_rate': 3.6886182157258745e-05, 'n_steps': 4645, 'total_timesteps': 731802, 'gamma': 0.9830398848855156, 'gae_lambda': 0.9686958942428519, 'ent_coef': 0.0527228737483698, 'vf_coef': 0.2007144262530156, 'max_grad_norm': 0.12470572929569344, 'reward_scaling': 0.0007239917550095877, 'hmax': 83944, 'sharpe_ratio_weight': 0.5895672210364138, 'loss_penalty_weight': 0.48465083759024963} because of the following error: The value None could not be cast to float..
+Trial 8 failed with value None.
+Trial 9 failed with parameters: {'learning_rate': 3.555904751398109e-05, 'n_steps': 9898, 'total_timesteps': 827007, 'gamma': 0.9177003327582581, 'gae_lambda': 0.9645232544846751, 'ent_coef': 0.03708104600739902, 'vf_coef': 0.15743489864816843, 'max_grad_norm': 0.3953861569120391, 'reward_scaling': 0.00020279068711476512, 'hmax': 67348, 'sharpe_ratio_weight': 0.2354170334854687, 'loss_penalty_weight': 0.3994294022483041} because of the following error: The value None could not be cast to float..
+Trial 9 failed with value None.
+A new study created in memory with name: no-name-cb70e350-e922-47d6-9a12-347c49069e31
+A new study created in memory with name: no-name-cb70e350-e922-47d6-9a12-347c49069e31
+A new study created in memory with name: no-name-4ce1d3c3-8fda-4819-982c-10f7def4c4da
+Trial 0 finished with value: 10.18967590962718 and parameters: {'learning_rate': 8.257080889432671e-05, 'n_steps': 7183, 'total_timesteps': 831200, 'gamma': 0.9329838981480192, 'gae_lambda': 0.9968483163165711, 'ent_coef': 0.015856144277571982, 'vf_coef': 0.2699379840450442, 'max_grad_norm': 0.14877083494398485, 'reward_scaling': 6.443734115830432e-05, 'hmax': 63099, 'sharpe_ratio_weight': 0.3792063877723861, 'loss_penalty_weight': 0.1900443286262496}. Best is trial 0 with value: 10.18967590962718.
+Trial 1 finished with value: -0.11205226543519871 and parameters: {'learning_rate': 2.240352794580963e-05, 'n_steps': 5722, 'total_timesteps': 994886, 'gamma': 0.9357439645530771, 'gae_lambda': 0.9183400209217195, 'ent_coef': 0.0683428521708368, 'vf_coef': 0.14489856767597173, 'max_grad_norm': 0.19317078493185036, 'reward_scaling': 1.2210650168547872e-05, 'hmax': 87067, 'sharpe_ratio_weight': 0.3869596651749711, 'loss_penalty_weight': 0.21598233205001233}. Best is trial 0 with value: 10.18967590962718.
+Trial 2 finished with value: 2.380315843175026 and parameters: {'learning_rate': 3.4456264747844785e-05, 'n_steps': 8601, 'total_timesteps': 864122, 'gamma': 0.9305875422487117, 'gae_lambda': 0.9586324675954092, 'ent_coef': 0.03314299419588622, 'vf_coef': 0.2874388452132285, 'max_grad_norm': 0.24382391964183048, 'reward_scaling': 0.00046949974939296886, 'hmax': 57462, 'sharpe_ratio_weight': 0.4514150195806467, 'loss_penalty_weight': 0.49460565458830147}. Best is trial 0 with value: 10.18967590962718.
+A new study created in memory with name: no-name-879158b7-f4cc-4a5a-b3b8-ed898d9dd818
+Trial 0 failed with parameters: {'learning_rate': 6.739450937408573e-05, 'n_steps': 4431, 'total_timesteps': 713732, 'gamma': 0.9194464071951756, 'gae_lambda': 0.9029327691268231, 'ent_coef': 0.09806887177929634, 'vf_coef': 0.11736836525525011, 'max_grad_norm': 0.1306297310195767, 'reward_scaling': 4.530735127725903e-05, 'hmax': 87612, 'sharpe_ratio_weight': 0.6896167401234596, 'loss_penalty_weight': 0.3073713671799416} because of the following error: KeyboardInterrupt().
+Traceback (most recent call last):
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/optuna/study/_optimize.py", line 200, in _run_trial
+    value_or_values = func(trial)
+  File "/Users/floriankockler/Documents/GitHub.nosync/quantumai2/hyperoptimizer/optunaoptimizer.py", line 376, in objective
+    model.learn(total_timesteps=timesteps, callback=callbacks,
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/a2c/a2c.py", line 194, in learn
+    return super().learn(
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 259, in learn
+    continue_training = self.collect_rollouts(self.env, callback, self.rollout_buffer, n_rollout_steps=self.n_steps)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 169, in collect_rollouts
+    actions, values, log_probs = self.policy(obs_tensor)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/policies.py", line 629, in forward
+    actions = actions.reshape((-1, *self.action_space.shape))
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/gymnasium/spaces/box.py", line 139, in shape
+    @property
+KeyboardInterrupt
+Trial 0 failed with value None.

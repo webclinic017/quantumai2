@@ -1,0 +1,33 @@
+{
+    "os": "macOS-13.4.1-arm64-arm-64bit",
+    "python": "3.10.12",
+    "heartbeatAt": "2023-08-08T08:44:22.014109",
+    "startedAt": "2023-08-08T08:44:21.351984",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "<python with no main file>",
+    "git": {
+        "remote": "https://github.com/sobiodum/quantumai2.git",
+        "commit": "1dd44d0b6e6e33b456a6278c1180dc6d2ba70c69"
+    },
+    "email": "78501745+sobiodum@users.noreply.github.com",
+    "root": "/Users/floriankockler/Documents/GitHub.nosync/quantumai2",
+    "host": "Florians-MacBook-Pro.local",
+    "username": "floriankockler",
+    "executable": "/Users/floriankockler/anaconda3/envs/py310/bin/python",
+    "cpu_count": 8,
+    "cpu_count_logical": 8,
+    "disk": {
+        "total": 228.27386474609375,
+        "used": 225.20759201049805
+    },
+    "gpuapple": {
+        "type": "arm",
+        "vendor": "Apple"
+    },
+    "memory": {
+        "total": 8.0
+    }
+}

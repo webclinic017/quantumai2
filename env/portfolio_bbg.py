@@ -155,8 +155,6 @@ class Portfolio_BBG(gym.Env):
         if self.terminal:
             if self.make_plots:
                 self._make_plots()
-            #! Now df_account_value contains the account values for the entire episode
-            #! You can analyze or visualize df_account_value here, or save it to a file
             df_account_value = self.save_asset_memory()
             end_total_asset = self.state[0] + sum(np.array(self.state[1:(self.stock_dim + 1)]) * np.array(
                 self.state[(self.stock_dim + 1):(self.stock_dim * 2 + 1)]))

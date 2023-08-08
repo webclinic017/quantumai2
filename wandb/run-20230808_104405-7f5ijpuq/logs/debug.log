@@ -1,0 +1,41 @@
+2023-08-08 10:44:05,538 INFO    Thread-16 (_run_job):41240 [wandb_setup.py:_flush():76] Current SDK version is 0.15.7
+2023-08-08 10:44:05,539 INFO    Thread-16 (_run_job):41240 [wandb_setup.py:_flush():76] Configure stats pid to 41240
+2023-08-08 10:44:05,539 INFO    Thread-16 (_run_job):41240 [wandb_setup.py:_flush():76] Loading settings from /Users/floriankockler/.config/wandb/settings
+2023-08-08 10:44:05,539 INFO    Thread-16 (_run_job):41240 [wandb_setup.py:_flush():76] Loading settings from /Users/floriankockler/Documents/GitHub.nosync/quantumai2/wandb/settings
+2023-08-08 10:44:05,539 INFO    Thread-16 (_run_job):41240 [wandb_setup.py:_flush():76] Loading settings from environment variables: {'api_key': '***REDACTED***', 'project': 'bloomberg', 'entity': 'kocklerf', 'root_dir': '/Users/floriankockler/Documents/GitHub.nosync/quantumai2', 'sweep_id': 'xbd7lgfr', 'run_id': '7f5ijpuq', 'sweep_param_path': '/Users/floriankockler/Documents/GitHub.nosync/quantumai2/wandb/sweep-xbd7lgfr/config-7f5ijpuq.yaml'}
+2023-08-08 10:44:05,539 INFO    Thread-16 (_run_job):41240 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2023-08-08 10:44:05,539 INFO    Thread-16 (_run_job):41240 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program': '<python with no main file>'}
+2023-08-08 10:44:05,539 INFO    Thread-16 (_run_job):41240 [wandb_init.py:_log_setup():507] Logging user logs to /Users/floriankockler/Documents/GitHub.nosync/quantumai2/wandb/run-20230808_104405-7f5ijpuq/logs/debug.log
+2023-08-08 10:44:05,539 INFO    Thread-16 (_run_job):41240 [wandb_init.py:_log_setup():508] Logging internal logs to /Users/floriankockler/Documents/GitHub.nosync/quantumai2/wandb/run-20230808_104405-7f5ijpuq/logs/debug-internal.log
+2023-08-08 10:44:05,539 INFO    Thread-16 (_run_job):41240 [wandb_init.py:_jupyter_setup():453] configuring jupyter hooks <wandb.sdk.wandb_init._WandbInit object at 0x3d9f78d60>
+2023-08-08 10:44:05,541 INFO    Thread-16 (_run_job):41240 [wandb_init.py:init():547] calling init triggers
+2023-08-08 10:44:05,541 INFO    Thread-16 (_run_job):41240 [wandb_init.py:init():554] wandb.init called with sweep_config: {'ent_coef': 0.08940045015899835, 'gae_lambda': 0.9596841132474012, 'gamma': 0.9063217218675012, 'hmax': 42427, 'learning_rate': 4.6625301262393885e-05, 'loss_penalty_weight': 0.35769391602155376, 'max_grad_norm': 0.19125975247999535, 'n_steps': 3294, 'reward_scaling': 0.0002541306496988688, 'sharpe_ratio_weight': 0.1906886765542132, 'vf_coef': 0.1910112572649668}
+config: {}
+2023-08-08 10:44:05,541 INFO    Thread-16 (_run_job):41240 [wandb_init.py:init():596] starting backend
+2023-08-08 10:44:05,541 INFO    Thread-16 (_run_job):41240 [wandb_init.py:init():600] setting up manager
+2023-08-08 10:44:05,546 INFO    Thread-16 (_run_job):41240 [backend.py:_multiprocessing_setup():106] multiprocessing start_methods=spawn,fork,forkserver, using: spawn
+2023-08-08 10:44:05,548 INFO    Thread-16 (_run_job):41240 [wandb_init.py:init():606] backend started and connected
+2023-08-08 10:44:05,563 INFO    Thread-16 (_run_job):41240 [wandb_run.py:_config_callback():1282] config_cb None None {'ent_coef': 0.08940045015899835, 'gae_lambda': 0.9596841132474012, 'gamma': 0.9063217218675012, 'hmax': 42427, 'learning_rate': 4.6625301262393885e-05, 'loss_penalty_weight': 0.35769391602155376, 'max_grad_norm': 0.19125975247999535, 'n_steps': 3294, 'reward_scaling': 0.0002541306496988688, 'sharpe_ratio_weight': 0.1906886765542132, 'vf_coef': 0.1910112572649668}
+2023-08-08 10:44:05,610 INFO    Thread-16 (_run_job):41240 [wandb_run.py:_label_probe_notebook():1234] probe notebook
+2023-08-08 10:44:05,611 INFO    Thread-16 (_run_job):41240 [wandb_run.py:_label_probe_notebook():1244] Unable to probe notebook: 'NoneType' object has no attribute 'get'
+2023-08-08 10:44:05,611 INFO    Thread-16 (_run_job):41240 [wandb_init.py:init():697] updated telemetry
+2023-08-08 10:44:05,697 INFO    Thread-16 (_run_job):41240 [wandb_init.py:init():730] communicating run to backend with 60.0 second timeout
+2023-08-08 10:44:06,149 INFO    Thread-16 (_run_job):41240 [wandb_run.py:_on_init():2174] communicating current version
+2023-08-08 10:44:06,300 INFO    Thread-16 (_run_job):41240 [wandb_run.py:_on_init():2183] got version response upgrade_message: "wandb version 0.15.8 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2023-08-08 10:44:06,300 INFO    Thread-16 (_run_job):41240 [wandb_init.py:init():781] starting run threads in backend
+2023-08-08 10:44:11,372 INFO    Thread-16 (_run_job):41240 [wandb_run.py:_console_start():2153] atexit reg
+2023-08-08 10:44:11,372 INFO    Thread-16 (_run_job):41240 [wandb_run.py:_redirect():2008] redirect: wrap_raw
+2023-08-08 10:44:11,372 INFO    Thread-16 (_run_job):41240 [wandb_run.py:_redirect():2073] Wrapping output streams.
+2023-08-08 10:44:11,372 INFO    Thread-16 (_run_job):41240 [wandb_run.py:_redirect():2098] Redirects installed.
+2023-08-08 10:44:11,373 INFO    Thread-16 (_run_job):41240 [wandb_init.py:init():822] run started, returning control to user process
+2023-08-08 10:44:11,374 INFO    Thread-16 (_run_job):41240 [wandb_run.py:_finish():1888] finishing run kocklerf/bloomberg/7f5ijpuq
+2023-08-08 10:44:11,374 INFO    Thread-16 (_run_job):41240 [jupyter.py:save_history():445] not saving jupyter history
+2023-08-08 10:44:11,374 INFO    Thread-16 (_run_job):41240 [jupyter.py:save_ipynb():373] not saving jupyter notebook
+2023-08-08 10:44:11,374 INFO    Thread-16 (_run_job):41240 [wandb_init.py:_jupyter_teardown():435] cleaning up jupyter logic
+2023-08-08 10:44:11,374 INFO    Thread-16 (_run_job):41240 [wandb_run.py:_atexit_cleanup():2122] got exitcode: 1
+2023-08-08 10:44:11,374 INFO    Thread-16 (_run_job):41240 [wandb_run.py:_restore():2105] restore
+2023-08-08 10:44:11,374 INFO    Thread-16 (_run_job):41240 [wandb_run.py:_restore():2111] restore done
+2023-08-08 10:44:14,891 INFO    Thread-16 (_run_job):41240 [wandb_run.py:_footer_history_summary_info():3475] rendering history
+2023-08-08 10:44:14,892 INFO    Thread-16 (_run_job):41240 [wandb_run.py:_footer_history_summary_info():3507] rendering summary
+2023-08-08 10:44:14,899 INFO    Thread-16 (_run_job):41240 [wandb_run.py:_footer_sync_info():3434] logging synced files

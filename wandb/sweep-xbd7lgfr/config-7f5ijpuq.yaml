@@ -1,0 +1,24 @@
+wandb_version: 1
+
+ent_coef:
+  value: 0.08940045015899835
+gae_lambda:
+  value: 0.9596841132474012
+gamma:
+  value: 0.9063217218675012
+hmax:
+  value: 42427
+learning_rate:
+  value: 4.6625301262393885e-05
+loss_penalty_weight:
+  value: 0.35769391602155376
+max_grad_norm:
+  value: 0.19125975247999535
+n_steps:
+  value: 3294
+reward_scaling:
+  value: 0.0002541306496988688
+sharpe_ratio_weight:
+  value: 0.1906886765542132
+vf_coef:
+  value: 0.1910112572649668
