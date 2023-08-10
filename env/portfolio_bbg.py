@@ -315,20 +315,6 @@ class Portfolio_BBG(gym.Env):
             if len(self.df.tic.unique()) > 1:
                 raise ValueError("Stocks are more than one")
             else:
-                #! Use as much past data as available, up to n_days_window days
-                #! Erstmal rausgenommen und schauen iob bbg field geht
-                # available_past_data = self.df.iloc[max(0, self.day-self.state_window):self.day].values
-                # state = [self.initial_amount]  # vector of amount of dollar we have
-                # for i in range(available_past_data.shape[0]):
-                #     state += list(available_past_data[i, :]) + [0]*self.stock_dim
-
-                # # If less than n_days_window days of past data was available,
-                # # fill the remaining space with the earliest available data
-                # if available_past_data.shape[0] < self.n_days_window:
-                #     earliest_data = list(available_past_data[0, :]) + [0]*self.stock_dim
-                #     state += earliest_data * (self.n_days_window - available_past_data.shape[0])
-
-                # state += sum([[self.data[indicator]] for indicator in self.indicators], [])
                 state = (
                     [self.initial_amount] +  # vector of amount of dollar we have
                     [self.data.close] +

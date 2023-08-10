@@ -26,6 +26,8 @@ logger.addHandler(handler)
 def optimize_optuna_StockTrading(env_train, env_validate, callbacks, n_trial_runs=10, n_jobs=1):
     best_model = None
     best_value = -np.inf
+    study_name = 'sotck_trading'
+    storage_name = 'sqlite:///optuna_study.db'
 
     def objective(trial):
         print(f"Trial {trial.number} started.")
@@ -113,7 +115,8 @@ def optimize_optuna_StockTrading(env_train, env_validate, callbacks, n_trial_run
         joblib.dump(study, 'checkpoint.pkl')
     # Create a study object and optimize the objective function
     try:
-        study = optuna.create_study(direction="maximize")
+        study = optuna.create_study(
+            direction="maximize", study_name=study_name, storage=storage_name, load_if_exists=True)
         study.optimize(objective, n_trials=n_trial_runs,
                        callbacks=None, n_jobs=n_jobs, gc_after_trial=True)
         # Save the best model to a file
