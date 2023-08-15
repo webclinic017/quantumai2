@@ -45,16 +45,14 @@ class Portfolio_BBG_window_v1(gym.Env):
                  position_flipping_weight: float = 0.1,
                  position_flipping_factor: float = 0.1,
                  daily_return_weight: float = 0.1,
+                 trade_budget: int = 1000,
+                 trade_frequency_penalty: int = 1,
+                 trade_frequency_penalty_weight: float = 0.1,
                  ):
 
-        self.drawdown_penalty_Factor = drawdown_penalty_Factor
-        self.drawdown_penalty_weight = drawdown_penalty_weight
-        self.position_flipping_window = position_flipping_window
-        self.position_flipping_weight = position_flipping_weight
-        self.position_flipping_factor = position_flipping_factor
-        self.daily_return_weight = daily_return_weight
-
         self.terminal = False
+        self.trade_frequency_penalty = trade_frequency_penalty
+        self.trade_frequency_penalty_weight = trade_frequency_penalty_weight
         self.max_drawdown_threshold = max_drawdown_threshold
         self.lookback_window = lookback_window
         self.action_space = action_space
@@ -92,8 +90,16 @@ class Portfolio_BBG_window_v1(gym.Env):
         self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(
             self.lookback_window * (1 + self.stock_dim * 2 + len(self.indicator_list)),))
 
+        self.trade_budget = trade_budget
         self.state = self._initiate_state()
 
+        self.drawdown_penalty_Factor = drawdown_penalty_Factor
+        self.drawdown_penalty_weight = drawdown_penalty_weight
+        self.position_flipping_window = position_flipping_window
+        self.position_flipping_weight = position_flipping_weight
+        self.position_flipping_factor = position_flipping_factor
+        self.daily_return_weight = daily_return_weight
+        self.remaining_budget = self.trade_budget
         # Initiate Reward
         self.cost = 0
         self.trades = 0
@@ -144,6 +150,49 @@ class Portfolio_BBG_window_v1(gym.Env):
     def indicators(self):
         # This will return a (5, indicators_dim) array.
         return self.state[:, 1+2*self.stock_dim:]
+    # @property
+    # def cash_balance(self):
+    #     return self.state[-1, 1]  # Adjusted index
+
+    # @cash_balance.setter
+    # def cash_balance(self, value):
+    #     self.state[-1, 1] = value  # Adjusted index
+
+    # @property
+    # def stock_prices(self):
+    #     # Adjusted indices
+    #     return self.state[:, 2:2+self.stock_dim]
+
+    # @stock_prices.setter
+    # def stock_prices(self, values):
+    #     # Adjusted indices
+    #     self.state[-1, 2:2+self.stock_dim] = values
+
+    # @property
+    # def stock_shares(self):
+    #     # Adjusted indices
+    #     return self.state[:, 2+self.stock_dim:2+2*self.stock_dim]
+
+    # @property
+    # def indicators(self):
+    #     # Adjusted indices
+    #     return self.state[:, 2+2*self.stock_dim:]
+
+    # @property
+    # def remaining_budget(self):
+    #     return self.state[-1, 0]  # First column for the last day
+
+    # @remaining_budget.setter
+    # def remaining_budget(self, value):
+    #     self.state[-1, 0] = value
+
+    # After these adjustments, the state's structure should be:
+
+    # Column 0: Remaining budget for each day.
+    # Column 1: Cash balance for each day.
+    # Columns 2 to 2+stock_dim-1: Stock prices for each day.
+    # Columns 2+stock_dim to 2+2*stock_dim-1: Stock shares for each day.
+    # Columns 2+2*stock_dim: Indicators.
 
     def _sell_stock(self, index, action):
         if self.short_selling_allowed:
@@ -152,13 +201,15 @@ class Portfolio_BBG_window_v1(gym.Env):
         else:
             sell_num_shares = math.floor(
                 min(self.stock_shares[-1][index], abs(action)))
+
         sell_amount = self.stock_prices[-1][index] * \
             sell_num_shares * (1 - self.trade_cost_pct)
+        self.trades += 1
+
         self.stock_shares[-1][index] -= sell_num_shares
 
         self.cost += (self.stock_prices[-1][index]
                       * sell_num_shares * self.trade_cost_pct)
-        self.trades += 1
         self.cash_balance += sell_amount
         self.current_step_cost += self.stock_prices[index] * \
             sell_num_shares * self.trade_cost_pct
@@ -172,14 +223,15 @@ class Portfolio_BBG_window_v1(gym.Env):
             available_amount = self.cash_balance / \
                 (self.stock_prices[-1][index] * (1 + self.trade_cost_pct))
             buy_num_shares = math.floor(min(available_amount, action))
+
         buy_amount = self.stock_prices[-1][index] * \
             buy_num_shares * (1 + self.trade_cost_pct)
+        self.trades += 1
 
         self.stock_shares[-1][index] += buy_num_shares
 
         self.cost += (self.stock_prices[-1][index]
                       * buy_num_shares * self.trade_cost_pct)
-        self.trades += 1
         self.cash_balance -= buy_amount
         self.current_step_cost += self.stock_prices[index] * \
             buy_num_shares * self.trade_cost_pct
@@ -193,16 +245,20 @@ class Portfolio_BBG_window_v1(gym.Env):
             begin_total_asset - self.current_step_cost
         daily_return = (end_total_asset - begin_total_asset -
                         self.current_step_cost) / begin_total_asset
+        trade_frequency_penalty = -self.trade_frequency_penalty * \
+            self.trade_frequency_penalty_weight
         drawdown_penalty = 0
         if self.asset_memory[-1] < (1 - self.max_drawdown_threshold) * max(self.asset_memory):
-            drawdown_penalty = -self.drawdown_penalty_Factor * self.drawdown_penalty_weight
+            drawdown_penalty = -self.drawdown_penalty_Factor * \
+                self.drawdown_penalty_weight * self.trades
+
         frequent_flipping_pentalty = 0
         if len(self.actions_memory) > self.position_flipping_window:
             # Rapid flipping between buying and selling
             if sum(self.actions_memory[-self.position_flipping_window:]) == 0:
                 frequent_flipping_pentalty -= self.position_flipping_factor * \
                     self.position_flipping_weight
-        return annualized_return + drawdown_penalty + frequent_flipping_pentalty + daily_return
+        return annualized_return + drawdown_penalty + frequent_flipping_pentalty + daily_return + trade_frequency_penalty
         return total_asset_reward * self.reward_scaling + annualized_return * self.reward_scaling
 
     def step(self, actions):
@@ -258,6 +314,7 @@ class Portfolio_BBG_window_v1(gym.Env):
 
     def reset(self, *, seed=None, options=None):
         self.day = self.lookback_window
+
         self.data = self.df.loc[self.day -
                                 self.lookback_window: self.day - 1, :]
 
@@ -307,6 +364,12 @@ class Portfolio_BBG_window_v1(gym.Env):
             # Initialize stock shares as zeros.
             stock_shares = np.zeros((self.lookback_window, self.stock_dim))
 
+            # Initialize remaining_budget as a single scalar value.
+            # remaining_budget = np.full(
+            #     (self.lookback_window, 1), initial_remaining_budget)
+            # remaining_budget = np.full(
+            #     (self.lookback_window, 1), self.remaining_budget)
+
             # Concatenate all arrays horizontally to form the state.
             state = np.hstack(
                 (cash_balance, stock_prices, stock_shares, indicators))
@@ -330,6 +393,10 @@ class Portfolio_BBG_window_v1(gym.Env):
             self.stock_holdings_memory[-self.lookback_window:]).reshape(self.lookback_window, self.stock_dim)
 
         indicators = self.data[self.indicator_list].values
+
+        # Make remaining_budget a 2D array with shape (lookback_window, 1).
+        # remaining_budget = np.full(
+        #     (self.lookback_window, 1), self.remaining_budget)
 
         # Stack these arrays vertically.
         return np.hstack([cash_balance, stock_prices, stock_shares, indicators])

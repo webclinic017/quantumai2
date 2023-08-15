@@ -1237,3 +1237,53 @@ Trial 28 finished with value: -100000.0 and parameters: {'learning_rate': 1.6788
 Trial 29 finished with value: -100000.0 and parameters: {'learning_rate': 0.00013060210045776419, 'n_steps': 24007, 'total_timesteps': 197960, 'gamma': 0.9311808143358964, 'gae_lambda': 0.9263662356384139, 'ent_coef': 0.06839348341160771, 'vf_coef': 0.21818002857534913, 'max_grad_norm': 0.15058061669718392, 'reward_scaling': 0.00021856996912637862, 'hmax': 55619, 'sharpe_ratio_weight': 0.15613059393650452, 'loss_penalty_weight': 0.4997650644563087}. Best is trial 0 with value: -100000.0.
 A new study created in RDB with name: optuna_study_bbg_window_A2C
 A new study created in RDB with name: optuna_study_bbg_window_PPO
+A new study created in RDB with name: optuna_study_bbg_window_A2C
+Trial 0 failed with parameters: {'daily_return_weight': 0.33232508012214246, 'drawdown_pentaly_Factor': 0.054311842122191034, 'drawdown_pentaly_weight': 0.2057006910885052, 'ent_coef': 0.09805076149308861, 'gae_lambda': 0.8574968860970802, 'gamma': 0.909786656503348, 'hmax': 6793, 'learning_rate': 8.515762836389818e-05, 'lookback_window': 64, 'max_grad_norm': 0.2555248439509659, 'n_steps': 15195, 'position_flipping_weight': 0.6135441555512099, 'position_flipping_window': 15, 'reward_scaling': 8.930463820225715e-05, 'total_timesteps': 1049364, 'trade_frequency_penalty': 13, 'trade_frequency_penalty_weight': 0.8004966550198955, 'vf_coef': 0.2377940888507761} because of the following error: KeyboardInterrupt().
+Traceback (most recent call last):
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/optuna/study/_optimize.py", line 200, in _run_trial
+    value_or_values = func(trial)
+  File "/var/folders/_2/x__vfndx65bd1j3y57l3q4wc0000gn/T/ipykernel_25429/2388900942.py", line 93, in objective
+    model.learn(total_timesteps=timesteps, callback=callbacks,
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/a2c/a2c.py", line 194, in learn
+    return super().learn(
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 259, in learn
+    continue_training = self.collect_rollouts(self.env, callback, self.rollout_buffer, n_rollout_steps=self.n_steps)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 178, in collect_rollouts
+    new_obs, rewards, dones, infos = env.step(clipped_actions)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/vec_env/base_vec_env.py", line 197, in step
+    return self.step_wait()
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/vec_env/vec_normalize.py", line 178, in step_wait
+    obs, rewards, dones, infos = self.venv.step_wait()
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/vec_env/dummy_vec_env.py", line 58, in step_wait
+    obs, self.buf_rews[env_idx], terminated, truncated, self.buf_infos[env_idx] = self.envs[env_idx].step(
+  File "/Users/floriankockler/Documents/GitHub.nosync/quantumai2/env/portfolio_bbg_window.py", line 299, in step
+    self.date_memory.append(self._get_date())
+  File "/Users/floriankockler/Documents/GitHub.nosync/quantumai2/env/portfolio_bbg_window.py", line 407, in _get_date
+    if len(self.df.tic.unique()) > 1:
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/pandas/core/series.py", line 2194, in unique
+    return super().unique()
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/pandas/core/base.py", line 1030, in unique
+    result = algorithms.unique1d(values)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/pandas/core/algorithms.py", line 390, in unique
+    return unique_with_mask(values)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/pandas/core/algorithms.py", line 429, in unique_with_mask
+    uniques = table.unique(values)
+KeyboardInterrupt
+Trial 0 failed with value None.
+A new study created in RDB with name: optuna_study_bbg_window_PPO
+Trial 0 failed with parameters: {'batch_size': 192, 'clip_range': 0.3435032523453615, 'daily_return_weight': 0.5531324952168057, 'drawdown_pentaly_Factor': 0.7714774866871061, 'drawdown_pentaly_weight': 0.11403935778693826, 'ent_coef': 0.015780856580519934, 'gae_lambda': 0.8567253781656776, 'gamma': 0.9573782904627449, 'hmax': 14276, 'learning_rate': 1.100159125987729e-05, 'lookback_window': 75, 'max_grad_norm': 0.3147604664337001, 'n_epochs': 5, 'n_steps': 42254, 'position_flipping_weight': 0.23875483060622393, 'position_flipping_window': 10, 'total_timesteps': 1248163, 'trade_frequency_penalty': 2, 'trade_frequency_penalty_weight': 0.2697092576635659, 'vf_coef': 0.5103454607482949} because of the following error: KeyboardInterrupt().
+Traceback (most recent call last):
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/optuna/study/_optimize.py", line 200, in _run_trial
+    value_or_values = func(trial)
+  File "/var/folders/_2/x__vfndx65bd1j3y57l3q4wc0000gn/T/ipykernel_25429/1196934734.py", line 102, in objective
+    model.learn(total_timesteps=timesteps, callback=callbacks,
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/ppo/ppo.py", line 308, in learn
+    return super().learn(
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 259, in learn
+    continue_training = self.collect_rollouts(self.env, callback, self.rollout_buffer, n_rollout_steps=self.n_steps)
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 207, in collect_rollouts
+    rollout_buffer.add(
+  File "/Users/floriankockler/anaconda3/envs/py310/lib/python3.10/site-packages/stable_baselines3/common/buffers.py", line 412, in add
+    def add(
+KeyboardInterrupt
+Trial 0 failed with value None.
